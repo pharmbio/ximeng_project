@@ -31,15 +31,18 @@ print(unique_group_count.head(3))
 #big_family = unique_family_count.index[0:3].astype(str)
 #big_group = unique_group_count.index[0:3].astype(str)
 
+#screen dataframe
 family_requried = dataframe['family'].map(lambda x : x in ('EGFR','PIKK','CDK'))
 group_requried = dataframe['group'].map(lambda x : x in ('control','TK','Other'))
 chosendf = dataframe[family_requried & group_requried]
-file_name = str(list(chosendf['filename']))
+file_name = str(list(chosendf['filename']))  #maybe array with label here not str?
 print(chosendf)
 
 
 path_img='/home/jovyan/scratch-shared/ximeng/KinaseInhibitorData/MiSyHo299'
 ls = os.listdir(path_img)
+
+#can not locate line of chosendf
 for i in ls:
     if bool(re.findall("\\b" + i +"\\b", file_name)):
         if (chosendf.loc[chosendf.filename == "\\b" + i +"\\b"],'group') == "control": 
