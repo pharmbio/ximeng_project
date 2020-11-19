@@ -27,6 +27,8 @@ def main():
         sort_images_by_groups(name)
         sort_images_by_families(name)
     
+    print('Good Bye')
+    
 def read_dataframe():
     return pd.read_csv("~/scratch-shared/ximeng/KinaseInhibitorData/dataframe.csv",';')
 
