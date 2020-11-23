@@ -21,7 +21,7 @@ def main():
     unique_groups_biggest = unique_group_biggest(dataframe)
     ##get the name list of images
     image_names = image_file_names()
-    ##
+    ##sort images to subfolder by control/compound using biggest 3 groups/families image data
     for name in image_names:
          sort_images_by_groups(name,dataframe)
          sort_images_by_families(name,dataframe)
