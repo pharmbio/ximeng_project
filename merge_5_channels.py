@@ -1,8 +1,8 @@
 import os
-from PIL.Image import Image
 import cv2
 import numpy as np
 import pandas as pd
+from tifffile import imread, imwrite
 
 ##merge five channels' image by add
 def main():
@@ -48,10 +48,21 @@ def main():
     #should transfer images to png format before
     target_path = "/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images/"
     for files in os.listdir(target_path + "compound"):
-        img = target_path + "compound/" + files
-        print(img)
-        data = Image.fromarray(img) 
-        data.save(target_path + "compound/" + str(files[:-7]) + 'png') 
+        if files.endswith('.npy'):
+            image_file = np.load(target_path + "compound/" + files, allow_pickle=True)
+            image_file = np.transpose(image_file, (2,0,1))
+            image_file = np.uint16(image_file)
+            print(files)
+            imwrite(target_path + "compound/" + str(files[:-4]), image_file)
+
+    for files in os.listdir(target_path + "control"):
+        if files.endswith('.npy'):
+            image_file = np.load(target_path + "control/" + files)
+            image_file = np.transpose(image_file, (2,0,1))
+            image_file = np.uint16(image_file)
+            print(files)
+            imwrite(target_path + "control/" + str(files[:-4]), image_file)
+
 
 if __name__ == "__main__":
     main()

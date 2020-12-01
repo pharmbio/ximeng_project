@@ -1,4 +1,7 @@
 import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+
 from PIL import Image
 import pandas as pd 
 import numpy as np
@@ -9,19 +12,19 @@ import shutil
 def main():
     global cwd
     cwd='/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images/'
-    Image.open(cwd + 'compound/0.tif.npy')
     #classify_to_subfolder()
-    #write_tfrecords()
+    write_tfrecords()
+    build_model("/home/jovyan/mnt/external-images-pvc/ximeng/train_five_channels.tfrecords")
 
 def classify_to_subfolder():
     df = pd.read_csv("~/scratch-shared/ximeng/dataset_ximeng.csv",';')
     for index, row in df.iterrows():
         if row['type'] == 'compound':
-            if os.path.exists(cwd + str(index) + '.tif.npy'):
-                shutil.move(cwd + str(index) + '.tif.npy', cwd + 'compound')
+            if os.path.exists(cwd + str(index) + '.tif'):
+                shutil.move(cwd + str(index) + '.tif', cwd + 'compound')
         elif row['type'] == 'control':
-            if os.path.exists(cwd + str(index) + '.tif.npy'):
-                shutil.move(cwd + str(index) + '.tif.npy', cwd + 'control')
+            if os.path.exists(cwd + str(index) + '.tif'):
+                shutil.move(cwd + str(index) + '.tif', cwd + 'control')
 
 
 def write_tfrecords():
@@ -29,21 +32,30 @@ def write_tfrecords():
     writer = tf.compat.v1.python_io.TFRecordWriter("/home/jovyan/mnt/external-images-pvc/ximeng/train_five_channels.tfrecords")
     for index,name in enumerate(classes):
         class_path=cwd+name+'/'
-        for img_name in os.listdir(class_path): 
-            img_path=class_path+img_name 
-            img=Image.open(img_path)
-            img= img.resize((2160,2160,5))
-            print(np.shape(img))
-            img_raw=img.tobytes()
-            example = tf.train.Example(features=tf.train.Features(feature={
+        for image_name in os.listdir(class_path): 
+            image_path=class_path+image_name 
+            image=Image.open(image_path)
+            #image= image.resize((5,2160,2160))
+            print(np.shape(image))
+            image_raw=image.tobytes()
+            working_image = tf.train.Example(features=tf.train.Features(feature={
                 "label": tf.train.Feature(int64_list=tf.train.Int64List(value=[index])),
-                'img_raw': tf.train.Feature(bytes_list=tf.train.BytesList(value=[img_raw]))
-            })) 
-            writer.write(example.SerializeToString())
+                'image_raw': tf.train.Feature(bytes_list=tf.train.BytesList(value=[image_raw]))
+            }))
+            writer.write(working_image.SerializeToString())
     writer.close()
 
-
-
+def build_model(tfrecord_file_path):
+    input_dataset = tf.data.TFRecordDataset(tfrecord_file_path)
+    model = tf.keras.Sequential([
+    tf.keras.layers.Flatten(input_shape=(5, 2160, 2160)),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dense(10)
+    ])
+    model.compile(optimizer='adam',
+              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
+    model.fit(input_dataset, epochs=10)
 
 if __name__ == "__main__":
     main()
