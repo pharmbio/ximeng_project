@@ -45,23 +45,23 @@ def main():
     #     if row['group'] not in big_group and row['family'] not in big_family:
     #         os.remove('/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images/' + str(index) + '.tif.npy')
 
-    #should transfer images to png format before
-    target_path = "/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images/"
-    for files in os.listdir(target_path + "compound"):
-        if files.endswith('.npy'):
-            image_file = np.load(target_path + "compound/" + files, allow_pickle=True)
-            image_file = np.transpose(image_file, (2,0,1))
-            image_file = np.uint16(image_file)
-            print(files)
-            imwrite(target_path + "compound/" + str(files[:-4]), image_file)
+    #should transfer images to png format before(maybe not useful)
+    # target_path = "/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images/"
+    # for files in os.listdir(target_path + "compound"):
+    #     if files.endswith('.npy'):
+    #         image_file = np.load(target_path + "compound/" + files, allow_pickle=True)
+    #         image_file = np.transpose(image_file, (2,0,1))
+    #         image_file = np.uint16(image_file)
+    #         print(files)
+    #         imwrite(target_path + "compound/" + str(files[:-4]), image_file)
 
-    for files in os.listdir(target_path + "control"):
-        if files.endswith('.npy'):
-            image_file = np.load(target_path + "control/" + files)
-            image_file = np.transpose(image_file, (2,0,1))
-            image_file = np.uint16(image_file)
-            print(files)
-            imwrite(target_path + "control/" + str(files[:-4]), image_file)
+    # for files in os.listdir(target_path + "control"):
+    #     if files.endswith('.npy'):
+    #         image_file = np.load(target_path + "control/" + files)
+    #         image_file = np.transpose(image_file, (2,0,1))
+    #         image_file = np.uint16(image_file)
+    #         print(files)
+    #         imwrite(target_path + "control/" + str(files[:-4]), image_file)
 
 
 if __name__ == "__main__":

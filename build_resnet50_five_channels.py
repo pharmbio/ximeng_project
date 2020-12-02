@@ -13,7 +13,7 @@ def main():
     global cwd
     cwd='/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images/'
     #classify_to_subfolder()
-    write_tfrecords()
+    #write_tfrecords()
     build_model("/home/jovyan/mnt/external-images-pvc/ximeng/train_five_channels.tfrecords")
 
 def classify_to_subfolder():
@@ -33,29 +33,32 @@ def write_tfrecords():
     for index,name in enumerate(classes):
         class_path=cwd+name+'/'
         for image_name in os.listdir(class_path): 
-            image_path=class_path+image_name 
-            image=Image.open(image_path)
-            #image= image.resize((5,2160,2160))
-            print(np.shape(image))
-            image_raw=image.tobytes()
-            working_image = tf.train.Example(features=tf.train.Features(feature={
-                "label": tf.train.Feature(int64_list=tf.train.Int64List(value=[index])),
-                'image_raw': tf.train.Feature(bytes_list=tf.train.BytesList(value=[image_raw]))
-            }))
-            writer.write(working_image.SerializeToString())
+            if image_name.endswith('.npy'):
+                image_path=class_path+image_name 
+                image=np.load(image_path)
+                #image= image.resize((5,2160,2160))
+                print(np.shape(image))
+                image_raw=image.tobytes()
+                working_image = tf.train.Example(features=tf.train.Features(feature={
+                    "label": tf.train.Feature(int64_list=tf.train.Int64List(value=[index])),
+                    'image_raw': tf.train.Feature(bytes_list=tf.train.BytesList(value=[image_raw]))
+                }))
+                writer.write(working_image.SerializeToString())
     writer.close()
 
 def build_model(tfrecord_file_path):
     input_dataset = tf.data.TFRecordDataset(tfrecord_file_path)
-    model = tf.keras.Sequential([
-    tf.keras.layers.Flatten(input_shape=(5, 2160, 2160)),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(10)
-    ])
+    model = tf.keras.applications.ResNet50(
+    include_top=False, weights='imagenet', input_tensor=None,
+    pooling=max)
     model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
     model.fit(input_dataset, epochs=10)
+    callbacks = [
+    tf.keras.callbacks.EarlyStopping(patience=2, monitor='val_loss'),
+    tf.keras.callbacks.TensorBoard(log_dir='./logs')
+    ]
 
 if __name__ == "__main__":
     main()
