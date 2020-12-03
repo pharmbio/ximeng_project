@@ -1,7 +1,6 @@
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
-
 from PIL import Image
 import pandas as pd 
 import numpy as np
@@ -14,7 +13,10 @@ def main():
     cwd='/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images/'
     #classify_to_subfolder()
     #write_tfrecords()
-    build_model("/home/jovyan/mnt/external-images-pvc/ximeng/train_five_channels.tfrecords")
+    read_tfrecord_file("/home/jovyan/mnt/external-images-pvc/ximeng/train_five_channels.tfrecords")
+    build_model()
+    model_probability()
+
 
 def classify_to_subfolder():
     df = pd.read_csv("~/scratch-shared/ximeng/dataset_ximeng.csv",';')
@@ -35,10 +37,8 @@ def write_tfrecords():
         for image_name in os.listdir(class_path): 
             if image_name.endswith('.npy'):
                 image_path=class_path+image_name 
-                image=np.load(image_path)
-                #image= image.resize((5,2160,2160))
-                print(np.shape(image))
-                image_raw=image.tobytes()
+                image_raw=np.load(image_path).astype(int)
+                image_raw=image_raw.tobytes()
                 working_image = tf.train.Example(features=tf.train.Features(feature={
                     "label": tf.train.Feature(int64_list=tf.train.Int64List(value=[index])),
                     'image_raw': tf.train.Feature(bytes_list=tf.train.BytesList(value=[image_raw]))
@@ -46,19 +46,45 @@ def write_tfrecords():
                 writer.write(working_image.SerializeToString())
     writer.close()
 
-def build_model(tfrecord_file_path):
-    input_dataset = tf.data.TFRecordDataset(tfrecord_file_path)
-    model = tf.keras.applications.ResNet50(
-    include_top=False, weights='imagenet', input_tensor=None,
-    pooling=max)
+
+def read_tfrecord_file(tfrecord_file_path):  
+    global parsed_image_dataset
+    raw_dataset = tf.data.TFRecordDataset(tfrecord_file_path)
+
+    image_feature_description = {
+        'label': tf.io.FixedLenFeature([], tf.int64),
+        'image_raw': tf.io.FixedLenFeature([], tf.string),}
+
+    def _parse_image_function(example_proto):
+        return tf.io.parse_single_example(example_proto, image_feature_description)
+
+    parsed_image_dataset = raw_dataset.map(_parse_image_function)
+
+def build_model():
+    global model
+    
+    input_layer = tf.keras.layers.Input(shape=(2160,2160,5))
+    second_layer = layers.Conv2D(3, 3, 9, activation='relu')(input_layer)
+    resnet50_layers = tf.keras.applications.ResNet50(include_top=True, weights='imagenet')(second_layer)
+    outputs = tf.keras.layers.Dense(5, activation=tf.nn.softmax)(resnet50_layers)
+    model = tf.keras.Model(inputs=input_layer, outputs=outputs)
     model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
-    model.fit(input_dataset, epochs=10)
+    model.summary()
+
+    model.fit(parsed_image_dataset, epochs=10)
     callbacks = [
     tf.keras.callbacks.EarlyStopping(patience=2, monitor='val_loss'),
     tf.keras.callbacks.TensorBoard(log_dir='./logs')
     ]
+
+def model_probability():
+    probability_model = tf.keras.Sequential([model, 
+    tf.keras.layers.Softmax()])
+
+    predictions = probability_model.predict(parsed_image_dataset)
+    predictions[10]
 
 if __name__ == "__main__":
     main()
