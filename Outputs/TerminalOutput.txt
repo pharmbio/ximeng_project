@@ -1,100 +1,54 @@
-68.tif.npy
-110.tif.npy
-290.tif.npy
-411.tif.npy
-511.tif.npy
-584.tif.npy
-850.tif.npy
-857.tif.npy
-1046.tif.npy
-1075.tif.npy
-1685.tif.npy
-1706.tif.npy
-1839.tif.npy
-2005.tif.npy
-2093.tif.npy
-2315.tif.npy
-2565.tif.npy
-2607.tif.npy
-3029.tif.npy
-3142.tif.npy
-3215.tif.npy
-3259.tif.npy
-3260.tif.npy
-3481.tif.npy
-3500.tif.npy
-3894.tif.npy
-3912.tif.npy
-3971.tif.npy
-3981.tif.npy
-4301.tif.npy
-4317.tif.npy
-4360.tif.npy
-4364.tif.npy
-4404.tif.npy
-4435.tif.npy
-4682.tif.npy
-4688.tif.npy
-4699.tif.npy
-4717.tif.npy
-4830.tif.npy
-4831.tif.npy
-4833.tif.npy
-5176.tif.npy
-5323.tif.npy
-5408.tif.npy
-5418.tif.npy
-5722.tif.npy
-5748.tif.npy
-5773.tif.npy
-6012.tif.npy
-6061.tif.npy
-6065.tif.npy
-6160.tif.npy
-6551.tif.npy
-6582.tif.npy
-6592.tif.npy
-6619.tif.npy
-6817.tif.npy
-7242.tif.npy
-7259.tif.npy
-7444.tif.npy
-7452.tif.npy
-7795.tif.npy
-7958.tif.npy
-8395.tif.npy
-8461.tif.npy
-8465.tif.npy
-8484.tif.npy
-8550.tif.npy
-8610.tif.npy
-8697.tif.npy
-8776.tif.npy
-8799.tif.npy
-9199.tif.npy
-9213.tif.npy
-9216.tif.npy
-9681.tif.npy
-9765.tif.npy
-9828.tif.npy
-10073.tif.npy
-10177.tif.npy
-10354.tif.npy
-10489.tif.npy
-11042.tif.npy
-11112.tif.npy
+2020-12-03 00:21:37.985957: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libnvinfer.so.6
+2020-12-03 00:21:37.988192: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libnvinfer_plugin.so.6
+2020-12-03 00:21:39.257025: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcuda.so.1
+2020-12-03 00:21:39.344382: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1555] Found device 0 with properties: 
+pciBusID: 0000:0b:00.0 name: GeForce GTX 1080 Ti computeCapability: 6.1
+coreClock: 1.582GHz coreCount: 28 deviceMemorySize: 10.92GiB deviceMemoryBandwidth: 451.17GiB/s
+2020-12-03 00:21:39.344501: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.1
+2020-12-03 00:21:39.344546: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcublas.so.10
+2020-12-03 00:21:39.347476: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcufft.so.10
+2020-12-03 00:21:39.348068: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcurand.so.10
+2020-12-03 00:21:39.351121: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusolver.so.10
+2020-12-03 00:21:39.352808: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusparse.so.10
+2020-12-03 00:21:39.352888: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudnn.so.7
+2020-12-03 00:21:39.361528: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1697] Adding visible gpu devices: 0
+2020-12-03 00:21:39.362059: I tensorflow/core/platform/cpu_feature_guard.cc:142] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+2020-12-03 00:21:39.372893: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 2200030000 Hz
+2020-12-03 00:21:39.375514: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x42ea6e0 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2020-12-03 00:21:39.375536: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+2020-12-03 00:21:39.628533: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x4a2db30 initialized for platform CUDA (this does not guarantee that XLA will be used). Devices:
+2020-12-03 00:21:39.628570: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): GeForce GTX 1080 Ti, Compute Capability 6.1
+2020-12-03 00:21:39.633216: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1555] Found device 0 with properties: 
+pciBusID: 0000:0b:00.0 name: GeForce GTX 1080 Ti computeCapability: 6.1
+coreClock: 1.582GHz coreCount: 28 deviceMemorySize: 10.92GiB deviceMemoryBandwidth: 451.17GiB/s
+2020-12-03 00:21:39.633302: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.1
+2020-12-03 00:21:39.633314: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcublas.so.10
+2020-12-03 00:21:39.633354: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcufft.so.10
+2020-12-03 00:21:39.633365: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcurand.so.10
+2020-12-03 00:21:39.633376: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusolver.so.10
+2020-12-03 00:21:39.633386: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusparse.so.10
+2020-12-03 00:21:39.633394: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudnn.so.7
+2020-12-03 00:21:39.646226: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1697] Adding visible gpu devices: 0
+2020-12-03 00:21:39.646345: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.1
+2020-12-03 00:21:39.941248: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1096] Device interconnect StreamExecutor with strength 1 edge matrix:
+2020-12-03 00:21:39.941289: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1102]      0 
+2020-12-03 00:21:39.941297: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] 0:   N 
+2020-12-03 00:21:39.947610: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1241] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 10443 MB memory) -> physical GPU (device: 0, name: GeForce GTX 1080 Ti, pci bus id: 0000:0b:00.0, compute capability: 6.1)
 Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/dist-packages/numpy/lib/npyio.py", line 460, in load
-    return pickle.load(fid, **pickle_kwargs)
-ValueError: could not convert string to int
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "merge_5_channels.py", line 66, in <module>
+  File "build_resnet50_five_channels.py", line 89, in <module>
     main()
-  File "merge_5_channels.py", line 51, in main
-    image_file = np.load(target_path + "compound/" + files, allow_pickle=True)
-  File "/usr/local/lib/python3.6/dist-packages/numpy/lib/npyio.py", line 463, in load
-    "Failed to interpret file %s as a pickle" % repr(file))
-OSError: Failed to interpret file '/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images/compound/10826.tif' as a pickle
+  File "build_resnet50_five_channels.py", line 17, in main
+    read_tfrecord_file("/home/jovyan/mnt/external-images-pvc/ximeng/train_five_channels.tfrecords")
+  File "build_resnet50_five_channels.py", line 63, in read_tfrecord_file
+    parsed_image_dataset = preprocess_input(parsed_image_dataset)
+  File "/usr/local/lib/python3.6/dist-packages/tensorflow_core/python/keras/applications/__init__.py", line 46, in wrapper
+    return base_fun(*args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/tensorflow_core/python/keras/applications/resnet.py", line 61, in preprocess_input
+    return resnet.preprocess_input(*args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/keras_applications/resnet.py", line 37, in preprocess_input
+    return imagenet_utils.preprocess_input(x, mode='caffe', **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/keras_applications/imagenet_utils.py", line 195, in preprocess_input
+    mode=mode, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/keras_applications/imagenet_utils.py", line 138, in _preprocess_symbolic_input
+    x = x[..., ::-1]
+TypeError: 'MapDataset' object is not subscriptable
