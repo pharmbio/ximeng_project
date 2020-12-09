@@ -1,54 +1,51 @@
-2020-12-03 00:21:37.985957: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libnvinfer.so.6
-2020-12-03 00:21:37.988192: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libnvinfer_plugin.so.6
-2020-12-03 00:21:39.257025: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcuda.so.1
-2020-12-03 00:21:39.344382: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1555] Found device 0 with properties: 
+2020-12-06 22:31:19.927163: W tensorflow/stream_executor/platform/default/dso_loader.cc:60] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /usr/local/cuda/extras/CUPTI/lib64:/usr/local/cuda/lib64:/usr/local/nvidia/lib:/usr/local/nvidia/lib64
+2020-12-06 22:31:19.927193: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+2020-12-06 22:31:22.491540: I tensorflow/compiler/jit/xla_cpu_device.cc:41] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2020-12-06 22:31:22.492562: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcuda.so.1
+2020-12-06 22:31:22.561323: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1727] Found device 0 with properties: 
 pciBusID: 0000:0b:00.0 name: GeForce GTX 1080 Ti computeCapability: 6.1
 coreClock: 1.582GHz coreCount: 28 deviceMemorySize: 10.92GiB deviceMemoryBandwidth: 451.17GiB/s
-2020-12-03 00:21:39.344501: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.1
-2020-12-03 00:21:39.344546: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcublas.so.10
-2020-12-03 00:21:39.347476: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcufft.so.10
-2020-12-03 00:21:39.348068: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcurand.so.10
-2020-12-03 00:21:39.351121: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusolver.so.10
-2020-12-03 00:21:39.352808: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusparse.so.10
-2020-12-03 00:21:39.352888: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudnn.so.7
-2020-12-03 00:21:39.361528: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1697] Adding visible gpu devices: 0
-2020-12-03 00:21:39.362059: I tensorflow/core/platform/cpu_feature_guard.cc:142] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
-2020-12-03 00:21:39.372893: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 2200030000 Hz
-2020-12-03 00:21:39.375514: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x42ea6e0 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
-2020-12-03 00:21:39.375536: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
-2020-12-03 00:21:39.628533: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x4a2db30 initialized for platform CUDA (this does not guarantee that XLA will be used). Devices:
-2020-12-03 00:21:39.628570: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): GeForce GTX 1080 Ti, Compute Capability 6.1
-2020-12-03 00:21:39.633216: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1555] Found device 0 with properties: 
-pciBusID: 0000:0b:00.0 name: GeForce GTX 1080 Ti computeCapability: 6.1
-coreClock: 1.582GHz coreCount: 28 deviceMemorySize: 10.92GiB deviceMemoryBandwidth: 451.17GiB/s
-2020-12-03 00:21:39.633302: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.1
-2020-12-03 00:21:39.633314: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcublas.so.10
-2020-12-03 00:21:39.633354: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcufft.so.10
-2020-12-03 00:21:39.633365: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcurand.so.10
-2020-12-03 00:21:39.633376: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusolver.so.10
-2020-12-03 00:21:39.633386: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusparse.so.10
-2020-12-03 00:21:39.633394: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudnn.so.7
-2020-12-03 00:21:39.646226: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1697] Adding visible gpu devices: 0
-2020-12-03 00:21:39.646345: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.1
-2020-12-03 00:21:39.941248: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1096] Device interconnect StreamExecutor with strength 1 edge matrix:
-2020-12-03 00:21:39.941289: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1102]      0 
-2020-12-03 00:21:39.941297: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] 0:   N 
-2020-12-03 00:21:39.947610: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1241] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 10443 MB memory) -> physical GPU (device: 0, name: GeForce GTX 1080 Ti, pci bus id: 0000:0b:00.0, compute capability: 6.1)
+2020-12-06 22:31:22.561532: W tensorflow/stream_executor/platform/default/dso_loader.cc:60] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /usr/local/cuda/extras/CUPTI/lib64:/usr/local/cuda/lib64:/usr/local/nvidia/lib:/usr/local/nvidia/lib64
+2020-12-06 22:31:22.561656: W tensorflow/stream_executor/platform/default/dso_loader.cc:60] Could not load dynamic library 'libcublas.so.11'; dlerror: libcublas.so.11: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /usr/local/cuda/extras/CUPTI/lib64:/usr/local/cuda/lib64:/usr/local/nvidia/lib:/usr/local/nvidia/lib64
+2020-12-06 22:31:22.561763: W tensorflow/stream_executor/platform/default/dso_loader.cc:60] Could not load dynamic library 'libcublasLt.so.11'; dlerror: libcublasLt.so.11: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /usr/local/cuda/extras/CUPTI/lib64:/usr/local/cuda/lib64:/usr/local/nvidia/lib:/usr/local/nvidia/lib64
+2020-12-06 22:31:22.565101: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
+2020-12-06 22:31:22.565627: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
+2020-12-06 22:31:22.569298: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.10
+2020-12-06 22:31:22.569449: W tensorflow/stream_executor/platform/default/dso_loader.cc:60] Could not load dynamic library 'libcusparse.so.11'; dlerror: libcusparse.so.11: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /usr/local/cuda/extras/CUPTI/lib64:/usr/local/cuda/lib64:/usr/local/nvidia/lib:/usr/local/nvidia/lib64
+2020-12-06 22:31:22.569560: W tensorflow/stream_executor/platform/default/dso_loader.cc:60] Could not load dynamic library 'libcudnn.so.8'; dlerror: libcudnn.so.8: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /usr/local/cuda/extras/CUPTI/lib64:/usr/local/cuda/lib64:/usr/local/nvidia/lib:/usr/local/nvidia/lib64
+2020-12-06 22:31:22.569577: W tensorflow/core/common_runtime/gpu/gpu_device.cc:1764] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
+Skipping registering GPU devices...
+2020-12-06 22:31:22.570144: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2020-12-06 22:31:22.574686: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2020-12-06 22:31:22.574721: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1267] Device interconnect StreamExecutor with strength 1 edge matrix:
+2020-12-06 22:31:22.574730: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1273]      
+WARNING:tensorflow:Model was constructed with shape (None, 224, 224, 3) for input KerasTensor(type_spec=TensorSpec(shape=(None, 224, 224, 3), dtype=tf.float32, name='input_2'), name='input_2', description="created by layer 'input_2'"), but it was called on an input with incompatible shape (None, 240, 240, 3).
+Model: "model"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_1 (InputLayer)         [(None, 2160, 2160, 5)]   0         
+_________________________________________________________________
+conv2d (Conv2D)              (None, 240, 240, 3)       138       
+_________________________________________________________________
+resnet50 (Functional)        (None, 1000)              25636712  
+_________________________________________________________________
+dense (Dense)                (None, 2)                 2002      
+=================================================================
+Total params: 25,638,852
+Trainable params: 25,585,732
+Non-trainable params: 53,120
+_________________________________________________________________
 Traceback (most recent call last):
-  File "build_resnet50_five_channels.py", line 89, in <module>
+  File "new_build_resnet50_five_channels.py", line 72, in <module>
     main()
-  File "build_resnet50_five_channels.py", line 17, in main
-    read_tfrecord_file("/home/jovyan/mnt/external-images-pvc/ximeng/train_five_channels.tfrecords")
-  File "build_resnet50_five_channels.py", line 63, in read_tfrecord_file
-    parsed_image_dataset = preprocess_input(parsed_image_dataset)
-  File "/usr/local/lib/python3.6/dist-packages/tensorflow_core/python/keras/applications/__init__.py", line 46, in wrapper
-    return base_fun(*args, **kwargs)
-  File "/usr/local/lib/python3.6/dist-packages/tensorflow_core/python/keras/applications/resnet.py", line 61, in preprocess_input
-    return resnet.preprocess_input(*args, **kwargs)
-  File "/usr/local/lib/python3.6/dist-packages/keras_applications/resnet.py", line 37, in preprocess_input
-    return imagenet_utils.preprocess_input(x, mode='caffe', **kwargs)
-  File "/usr/local/lib/python3.6/dist-packages/keras_applications/imagenet_utils.py", line 195, in preprocess_input
-    mode=mode, **kwargs)
-  File "/usr/local/lib/python3.6/dist-packages/keras_applications/imagenet_utils.py", line 138, in _preprocess_symbolic_input
-    x = x[..., ::-1]
-TypeError: 'MapDataset' object is not subscriptable
+  File "new_build_resnet50_five_channels.py", line 17, in main
+    final_model = build_model(train_dataset)
+  File "new_build_resnet50_five_channels.py", line 63, in build_model
+    model.fit(train_dataset, validation_split=0.2, epochs=10)
+  File "/usr/local/lib/python3.6/dist-packages/tensorflow/python/keras/engine/training.py", line 1073, in fit
+    (x, y, sample_weight), validation_split=validation_split))
+  File "/usr/local/lib/python3.6/dist-packages/tensorflow/python/keras/engine/data_adapter.py", line 1359, in train_validation_split
+    "arrays, found following types in the input: {}".format(unsplitable))
+ValueError: `validation_split` is only supported for Tensors or NumPy arrays, found following types in the input: [<class 'tensorflow.python.data.ops.dataset_ops.MapDataset'>]

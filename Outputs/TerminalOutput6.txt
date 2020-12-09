@@ -1,0 +1,109 @@
+2020-12-08 23:45:56.899060: W tensorflow/stream_executor/platform/default/dso_loader.cc:60] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /usr/local/cuda/extras/CUPTI/lib64:/usr/local/cuda/lib64:/usr/local/nvidia/lib:/usr/local/nvidia/lib64
+2020-12-08 23:45:56.899092: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+2020-12-08 23:45:59.759858: I tensorflow/compiler/jit/xla_cpu_device.cc:41] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2020-12-08 23:45:59.762697: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcuda.so.1
+2020-12-08 23:45:59.789726: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1727] Found device 0 with properties: 
+pciBusID: 0000:0b:00.0 name: GeForce GTX 1080 Ti computeCapability: 6.1
+coreClock: 1.582GHz coreCount: 28 deviceMemorySize: 10.92GiB deviceMemoryBandwidth: 451.17GiB/s
+2020-12-08 23:45:59.789889: W tensorflow/stream_executor/platform/default/dso_loader.cc:60] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /usr/local/cuda/extras/CUPTI/lib64:/usr/local/cuda/lib64:/usr/local/nvidia/lib:/usr/local/nvidia/lib64
+2020-12-08 23:45:59.790077: W tensorflow/stream_executor/platform/default/dso_loader.cc:60] Could not load dynamic library 'libcublas.so.11'; dlerror: libcublas.so.11: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /usr/local/cuda/extras/CUPTI/lib64:/usr/local/cuda/lib64:/usr/local/nvidia/lib:/usr/local/nvidia/lib64
+2020-12-08 23:45:59.790227: W tensorflow/stream_executor/platform/default/dso_loader.cc:60] Could not load dynamic library 'libcublasLt.so.11'; dlerror: libcublasLt.so.11: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /usr/local/cuda/extras/CUPTI/lib64:/usr/local/cuda/lib64:/usr/local/nvidia/lib:/usr/local/nvidia/lib64
+2020-12-08 23:45:59.792380: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
+2020-12-08 23:45:59.792753: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
+2020-12-08 23:45:59.796454: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.10
+2020-12-08 23:45:59.796607: W tensorflow/stream_executor/platform/default/dso_loader.cc:60] Could not load dynamic library 'libcusparse.so.11'; dlerror: libcusparse.so.11: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /usr/local/cuda/extras/CUPTI/lib64:/usr/local/cuda/lib64:/usr/local/nvidia/lib:/usr/local/nvidia/lib64
+2020-12-08 23:45:59.796762: W tensorflow/stream_executor/platform/default/dso_loader.cc:60] Could not load dynamic library 'libcudnn.so.8'; dlerror: libcudnn.so.8: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /usr/local/cuda/extras/CUPTI/lib64:/usr/local/cuda/lib64:/usr/local/nvidia/lib:/usr/local/nvidia/lib64
+2020-12-08 23:45:59.796774: W tensorflow/core/common_runtime/gpu/gpu_device.cc:1764] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
+Skipping registering GPU devices...
+2020-12-08 23:45:59.797173: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2020-12-08 23:45:59.800085: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2020-12-08 23:45:59.800115: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1267] Device interconnect StreamExecutor with strength 1 edge matrix:
+2020-12-08 23:45:59.800121: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1273]      
+2020-12-08 23:52:01.702332: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:127] None of the MLIR optimization passes are enabled (registered 2)
+2020-12-08 23:52:01.703531: I tensorflow/core/platform/profile_utils/cpu_utils.cc:112] CPU Frequency: 2200030000 Hz
+Model: "model"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_1 (InputLayer)         [(None, 2160, 2160, 5)]   0         
+_________________________________________________________________
+conv2d (Conv2D)              (None, 224, 224, 3)       56279538  
+_________________________________________________________________
+resnet50 (Functional)        (None, 1000)              25636712  
+_________________________________________________________________
+dense (Dense)                (None, 2)                 2002      
+=================================================================
+Total params: 81,918,252
+Trainable params: 81,865,132
+Non-trainable params: 53,120
+_________________________________________________________________
+Epoch 1/10
+Traceback (most recent call last):
+  File "new_build_resnet50_five_channels.py", line 72, in <module>
+    main()
+  File "new_build_resnet50_five_channels.py", line 17, in main
+    final_model = build_model(train_dataset)
+  File "new_build_resnet50_five_channels.py", line 63, in build_model
+    model.fit(train_dataset, epochs=10)
+  File "/usr/local/lib/python3.6/dist-packages/tensorflow/python/keras/engine/training.py", line 1132, in fit
+    tmp_logs = self.train_function(iterator)
+  File "/usr/local/lib/python3.6/dist-packages/tensorflow/python/eager/def_function.py", line 787, in __call__
+    result = self._call(*args, **kwds)
+  File "/usr/local/lib/python3.6/dist-packages/tensorflow/python/eager/def_function.py", line 831, in _call
+    self._initialize(args, kwds, add_initializers_to=initializers)
+  File "/usr/local/lib/python3.6/dist-packages/tensorflow/python/eager/def_function.py", line 685, in _initialize
+    *args, **kwds))
+  File "/usr/local/lib/python3.6/dist-packages/tensorflow/python/eager/function.py", line 2998, in _get_concrete_function_internal_garbage_collected
+    graph_function, _ = self._maybe_define_function(args, kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/tensorflow/python/eager/function.py", line 3390, in _maybe_define_function
+    graph_function = self._create_graph_function(args, kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/tensorflow/python/eager/function.py", line 3235, in _create_graph_function
+    capture_by_value=self._capture_by_value),
+  File "/usr/local/lib/python3.6/dist-packages/tensorflow/python/framework/func_graph.py", line 998, in func_graph_from_py_func
+    func_outputs = python_func(*func_args, **func_kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/tensorflow/python/eager/def_function.py", line 593, in wrapped_fn
+    out = weak_wrapped_fn().__wrapped__(*args, **kwds)
+  File "/usr/local/lib/python3.6/dist-packages/tensorflow/python/framework/func_graph.py", line 985, in wrapper
+    raise e.ag_error_metadata.to_exception(e)
+ValueError: in user code:
+
+    /usr/local/lib/python3.6/dist-packages/tensorflow/python/keras/engine/training.py:837 train_function  *
+        return step_function(self, iterator)
+    /usr/local/lib/python3.6/dist-packages/tensorflow/python/keras/engine/training.py:827 step_function  **
+        outputs = model.distribute_strategy.run(run_step, args=(data,))
+    /usr/local/lib/python3.6/dist-packages/tensorflow/python/distribute/distribute_lib.py:1263 run
+        return self._extended.call_for_each_replica(fn, args=args, kwargs=kwargs)
+    /usr/local/lib/python3.6/dist-packages/tensorflow/python/distribute/distribute_lib.py:2735 call_for_each_replica
+        return self._call_for_each_replica(fn, args, kwargs)
+    /usr/local/lib/python3.6/dist-packages/tensorflow/python/distribute/distribute_lib.py:3424 _call_for_each_replica
+        return fn(*args, **kwargs)
+    /usr/local/lib/python3.6/dist-packages/tensorflow/python/keras/engine/training.py:820 run_step  **
+        outputs = model.train_step(data)
+    /usr/local/lib/python3.6/dist-packages/tensorflow/python/keras/engine/training.py:788 train_step
+        y, y_pred, sample_weight, regularization_losses=self.losses)
+    /usr/local/lib/python3.6/dist-packages/tensorflow/python/keras/engine/compile_utils.py:212 __call__
+        batch_dim = array_ops.shape(y_t)[0]
+    /usr/local/lib/python3.6/dist-packages/tensorflow/python/util/dispatch.py:206 wrapper
+        return target(*args, **kwargs)
+    /usr/local/lib/python3.6/dist-packages/tensorflow/python/ops/array_ops.py:1048 _slice_helper
+        name=name)
+    /usr/local/lib/python3.6/dist-packages/tensorflow/python/util/dispatch.py:206 wrapper
+        return target(*args, **kwargs)
+    /usr/local/lib/python3.6/dist-packages/tensorflow/python/ops/array_ops.py:1220 strided_slice
+        shrink_axis_mask=shrink_axis_mask)
+    /usr/local/lib/python3.6/dist-packages/tensorflow/python/ops/gen_array_ops.py:10517 strided_slice
+        shrink_axis_mask=shrink_axis_mask, name=name)
+    /usr/local/lib/python3.6/dist-packages/tensorflow/python/framework/op_def_library.py:750 _apply_op_helper
+        attrs=attr_protos, op_def=op_def)
+    /usr/local/lib/python3.6/dist-packages/tensorflow/python/framework/func_graph.py:600 _create_op_internal
+        compute_device)
+    /usr/local/lib/python3.6/dist-packages/tensorflow/python/framework/ops.py:3542 _create_op_internal
+        op_def=op_def)
+    /usr/local/lib/python3.6/dist-packages/tensorflow/python/framework/ops.py:2019 __init__
+        control_input_ops, op_def)
+    /usr/local/lib/python3.6/dist-packages/tensorflow/python/framework/ops.py:1860 _create_c_op
+        raise ValueError(str(e))
+
+    ValueError: slice index 0 of dimension 0 out of bounds. for '{{node strided_slice}} = StridedSlice[Index=DT_INT32, T=DT_INT32, begin_mask=0, ellipsis_mask=0, end_mask=0, new_axis_mask=0, shrink_axis_mask=1](Shape, strided_slice/stack, strided_slice/stack_1, strided_slice/stack_2)' with input shapes: [0], [1], [1], [1] and with computed input tensors: input[1] = <0>, input[2] = <1>, input[3] = <1>.
+

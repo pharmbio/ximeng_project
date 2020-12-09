@@ -13,9 +13,9 @@ def main():
     cwd='/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images/'
     #classify_to_subfolder()
     #write_tfrecords()
-    read_tfrecord_file("/home/jovyan/mnt/external-images-pvc/ximeng/train_five_channels.tfrecords")
-    build_model()
-    model_probability()
+    parsed_image_dataset = read_tfrecord_file()
+    final_model = build_model(parsed_image_dataset)
+    model_probability(final_model,parsed_image_dataset)
 
 
 def classify_to_subfolder():
@@ -46,22 +46,32 @@ def write_tfrecords():
                 writer.write(working_image.SerializeToString())
     writer.close()
 
-
-def read_tfrecord_file(tfrecord_file_path):  
-    global parsed_image_dataset
-    raw_dataset = tf.data.TFRecordDataset(tfrecord_file_path)
-
+def _parse_function(example_proto):
     image_feature_description = {
         'label': tf.io.FixedLenFeature([], tf.int64),
         'image_raw': tf.io.FixedLenFeature([], tf.string),}
+    return tf.io.parse_single_example(example_proto, image_feature_description)
 
-    def _parse_image_function(example_proto):
-        return tf.io.parse_single_example(example_proto, image_feature_description)
+def read_tfrecord_file():
+    raw_dataset = tf.keras.preprocessing.image_dataset_from_directory('/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images/', labels='inferred', label_mode='int')
+    #raw_dataset = tf.data.TFRecordDataset("/home/jovyan/mnt/external-images-pvc/ximeng/train_five_channels.tfrecords")
+    parsed_image_dataset = raw_dataset.map(_parse_function)
+    return parsed_image_dataset
 
-    parsed_image_dataset = raw_dataset.map(_parse_image_function)
+    #raw_dataset = tf.data.TFRecordDataset(tfrecord_file_path)
+    #parsed_image_dataset = dataset.map(read_tfrecord)
 
-def build_model():
-    global model
+    # raw_dataset = tf.data.TFRecordDataset(tfrecord_file_path)
+
+    # image_feature_description = {
+    #     'label': tf.io.FixedLenFeature([], tf.int64),
+    #     'image_raw': tf.io.FixedLenFeature([], tf.string),}
+    
+    # parsed_image_dataset =tf.io.parse_single_example(raw_dataset.map, image_feature_description)
+    # return parsed_image_dataset
+
+
+def build_model(parsed_image_dataset):
     
     input_layer = tf.keras.layers.Input(shape=(2160,2160,5))
     second_layer = layers.Conv2D(3, 3, 9, activation='relu')(input_layer)
@@ -78,12 +88,12 @@ def build_model():
     tf.keras.callbacks.EarlyStopping(patience=2, monitor='val_loss'),
     tf.keras.callbacks.TensorBoard(log_dir='./logs')
     ]
-
-def model_probability():
+    return model
+def model_probability(model, dataset):
     probability_model = tf.keras.Sequential([model, 
     tf.keras.layers.Softmax()])
 
-    predictions = probability_model.predict(parsed_image_dataset)
+    predictions = probability_model.predict(dataset)
     predictions[10]
 
 if __name__ == "__main__":
