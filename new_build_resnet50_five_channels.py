@@ -31,7 +31,7 @@ def classify_to_subfolder():
 def write_datasets():
     from glob import glob
     data_directory = glob('/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images/*/*.npy')
-    train_dataset = tf.data.Dataset.list_files(data_directory)
+    train_dataset = tf.data.Dataset.list_files('/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images/*/*.npy')
     
     # train_dataset = tf.keras.preprocessing.image_dataset_from_directory(
     # data_directory,
@@ -56,7 +56,7 @@ def build_model(train_dataset):
     outputs = tf.keras.layers.Dense(2, activation=tf.nn.softmax)(resnet50_layers)
     model = tf.keras.Model(inputs=input_layer, outputs=outputs)
     model.compile(optimizer='adam',
-              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
     model.summary()
 
