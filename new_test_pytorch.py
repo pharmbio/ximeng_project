@@ -8,19 +8,21 @@ import numpy as np
 from torchvision import datasets, models, transforms
 import torch.nn as nn
 import torch.optim as optim
-from torchvision.datasets import ImageFolder
+from torchvision.transforms import ToTensor
 
 class CustomDataset(torch.utils.data.Dataset):
     def __init__(self, csv_path, images_folder, transform = None):
         self.df = pd.read_csv(csv_path,sep = ';')
         self.images_folder = images_folder
         self.transform = transform
+        self.class2index = {"compound":0, "control":1}
 
     def __len__(self):
         return len(self.df)
+
     def __getitem__(self, index):
         filename = self.df.loc[index,'id']
-        label = self.df.loc[index, 'type']
+        label =  self.class2index[self.df.loc[index, 'type']]
         image = PIL.Image.open(os.path.join(self.images_folder, str(filename)) + '.tif')
         if self.transform is not None:
             image = self.transform(image)
@@ -70,8 +72,8 @@ def train_and_valid(model, loss_function, optimizer, epochs=10):
         valid_acc = 0.0
  
         for i, (inputs, labels) in enumerate(train_dataset):
-            inputs = inputs.to(device)
-            labels = labels.to(device)
+            inputs  = ToTensor()(inputs)
+            labels = torch.tensor(labels).to(device)
 
             optimizer.zero_grad()
             outputs = model(inputs)
@@ -135,7 +137,7 @@ def train_and_valid(model, loss_function, optimizer, epochs=10):
 
 num_epochs = 10
 trained_model, history = train_and_valid(resnet50, loss_function, optimizer, num_epochs)
-torch.save(history, 'models/'+"5channels"+'_history.pt')
+torch.save(history, 'models/'+"5channels_test1"+'_history.pt')
  
 history = np.array(history)
 plt.plot(history[:, 0:2])
