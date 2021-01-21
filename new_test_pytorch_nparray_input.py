@@ -38,13 +38,13 @@ test_data_size = len(test_dataset)
 
 def main_nn():
     resnet50 = models.resnet50(pretrained=True)
-        
-    fc_inputs = resnet50.fc.in_features
-    #resnet50.fc = nn.Sequential(
-        #nn.Conv2d(5,3,1937),
-        #nn.Linear(fc_inputs, 2),
-        #nn.LogSoftmax(dim=1))
-
+    resnet50.conv1.in_channels = 5     
+    # fc_inputs = resnet50.fc.in_features
+    # resnet50.fc = nn.Sequential(
+    #     nn.Conv2d(5,3,1937),
+    #     nn.Linear(fc_inputs, 2),
+    #     nn.LogSoftmax(dim=1))
+    print(resnet50)
     resnet50 = resnet50.to('cuda:0')
     
     loss_function = nn.NLLLoss()
