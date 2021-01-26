@@ -37,20 +37,46 @@ valid_data_size = len(valid_dataset)
 test_data_size = len(test_dataset)
 
 def main_nn():
-    resnet50 = models.resnet50(pretrained=True)
-    resnet50.conv1.in_channels = 5     
+    #resnet50 = models.resnet50(pretrained=True)
+    #resnet50.conv1.in_channels = 5     
     # fc_inputs = resnet50.fc.in_features
     # resnet50.fc = nn.Sequential(
     #     nn.Conv2d(5,3,1937),
     #     nn.Linear(fc_inputs, 2),
     #     nn.LogSoftmax(dim=1))
-    print(resnet50)
-    resnet50 = resnet50.to('cuda:0')
+        
+    model = models.resnet50(pretrained=True)
+
+    layer = model.conv1
+            
+    
+    new_layer = nn.Conv2d(in_channels=5, 
+                    out_channels=layer.out_channels, 
+                    kernel_size=3, 
+                    stride=1937, 
+                    padding=layer.padding,
+                    bias=layer.bias)
+
+    copy_weights = 0 
+    
+    pretrained_weights = layer.weight.clone()
+    new_layer.weight[:,:3,:,:] = torch.nn.Parameter(pretrained_weights)
+    new_layer.weight[:,3,:,:] = torch.nn.Parameter(pretrained_weights[:,1,:,:])
+    #new_layer.weight[:, :layer.in_channels, :, :] = layer.weight.clone()
+
+    for i in range(5 - layer.in_channels):
+        channel = layer.in_channels + i
+        new_layer.weight[:, channel:channel+1, :, :] = layer.weight[:, copy_weights:copy_weights+1, : :].clone()
+    new_layer.weight = nn.Parameter(new_layer.weight)
+    model.conv1 = new_layer    
+    
+    print(model)
+    model = model.to('cuda:0')
     
     loss_function = nn.NLLLoss()
-    optimizer = optim.Adam(resnet50.parameters())
+    optimizer = optim.Adam(model.parameters())
 
-    return resnet50,loss_function,optimizer
+    return model,loss_function,optimizer
 
 resnet50,loss_function,optimizer = main_nn()
 
