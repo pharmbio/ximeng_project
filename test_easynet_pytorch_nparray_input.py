@@ -37,88 +37,45 @@ valid_data_size = len(valid_dataset)
 test_data_size = len(test_dataset)
 
 def main_nn():
-    # print(model)
-    # layer = model.conv1
-            
-    
-    # new_layer = nn.Conv2d(in_channels=5, 
-    #                 out_channels=layer.out_channels, 
-    #                 kernel_size=3, 
-    #                 stride=1937, 
-    #                 padding=layer.padding,
-    #                 bias=layer.bias)
 
-    # copy_weights = 0 
-    
-    # pretrained_weights = layer.weight.clone()
-    # new_layer.weight[:,:3,:,:] = torch.nn.Parameter(pretrained_weights)
-    # new_layer.weight[:,3,:,:] = torch.nn.Parameter(pretrained_weights[:,1,:,:])
-    # #new_layer.weight[:, :layer.in_channels, :, :] = layer.weight.clone()
+    class Net(nn.Module):
+        def __init__(self):
+            super(Net, self).__init__()
+            self.conv1 = nn.Conv2d(5, 32, 3, 1937)
+            self.conv2 = nn.Conv2d(32, 64, 3, 1)
+            self.dropout1 = nn.Dropout2d(0.25)
+            self.dropout2 = nn.Dropout2d(0.5)
+            self.fc1 = nn.Linear(9216, 128)
+            self.fc2 = nn.Linear(128, 10)
 
-    # for i in range(5 - layer.in_channels):
-    #     channel = layer.in_channels + i
-    #     new_layer.weight[:, channel:channel+1, :, :] = layer.weight[:, copy_weights:copy_weights+1, : :].clone()
-    # new_layer.weight = nn.Parameter(new_layer.weight)
-    # model.conv1 = new_layer    
-    
-    # print(model)
-    model = models.resnet50(pretrained= True)
-    fc_inputs = model.fc.in_features
-    model.fc = nn.Sequential(
-        nn.Linear(fc_inputs, 2),
-        nn.LogSoftmax(dim=1))    
-    
-    # layer = model.conv1
-    # new_layer = nn.Conv2d(in_channels=5, 
-    #                 out_channels=layer.out_channels, 
-    #                 kernel_size=3, 
-    #                 stride=1937, 
-    #                 padding=layer.padding,
-    #                 bias=layer.bias)
+            # x represents our data
+        def forward(self, x):
+            # Pass data through conv1
+            x = self.conv1(x)
+            # Use the rectified-linear activation function over x
+            x = nn.functional.relu(x)
 
-    # copy_weights = 0 
-    
-    # pretrained_weights = layer.weight.clone()
-    # new_layer.weight[:,:3,:,:] = torch.nn.Parameter(pretrained_weights)
-    # new_layer.weight[:,3,:,:] = torch.nn.Parameter(pretrained_weights[:,1,:,:])
-    # new_layer.weight[:, :layer.in_channels, :, :] = layer.weight.clone()
+            x = self.conv2(x)
+            x = nn.functional.relu(x)
 
-    # for i in range(5 - layer.in_channels):
-    #     channel = layer.in_channels + i
-    #     new_layer.weight[:, channel:channel+1, :, :] = layer.weight[:, copy_weights:copy_weights+1, : :].clone()
-    # new_layer.weight = nn.Parameter(new_layer.weight)
-    # model.conv1 = new_layer   
-    # new_max_pool = nn.AdaptiveAvgPool2d(3)
-    # model.maxpool = new_max_pool
-    # layer = model.conv1
-    # new_layer = nn.Conv2d(in_channels=5, 
-    #                 out_channels=layer.out_channels, 
-    #                 kernel_size=3, 
-    #                 stride=1937, 
-    #                 padding=layer.padding,
-    #                 bias=layer.bias)
+            # Run max pooling over x
+            x = nn.functional.max_pool2d(x, 2)
+            # Pass data through dropout1
+            x = self.dropout1(x)
+            # Flatten x with start_dim=1
+            x = torch.flatten(x, 1)
+            # Pass data through fc1
+            x = self.fc1(x)
+            x = nn.functional.relu(x)
+            x = self.dropout2(x)
+            x = self.fc2(x)
 
-    # copy_weights = 0 
-    
-    # new_layer.weight.data = torch.ones([64,3,3,3])
+            # Apply softmax to x
+            output = nn.functional.log_softmax(x, dim=1)
+            return output
 
-    # for i in range(5 - layer.in_channels):
-    #     channel = layer.in_channels + i
-    #     new_layer.weight[:, channel:channel+1, :, :] = layer.weight[:, copy_weights:copy_weights+1, : :].clone()
-    #new_layer.weight = nn.Parameter(new_layer.weight)
-    second_layer = nn.AdaptiveAvgPool2d(3)
-    model = nn.Sequential(
-         nn.Conv2d(in_channels=5, 
-                    out_channels=1, 
-                    kernel_size=3, 
-                    stride=1937, 
-                    padding=0,
-                    bias=False),
-        model)
+    model = Net()
     print(model)
-
-    model = model.to('cuda:0')
-     
 
 
     loss_function = nn.NLLLoss()
@@ -150,6 +107,7 @@ def train_and_valid(model, loss_function, optimizer, epochs=10):
             labels = torch.tensor(labels).to(device)
 
             optimizer.zero_grad()
+            
             outputs = model(inputs)
  
             loss = loss_function(outputs, labels)
