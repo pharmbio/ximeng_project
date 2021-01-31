@@ -104,10 +104,11 @@ def train_and_valid(model, loss_function, optimizer, epochs=10):
  
         for i, (inputs, labels) in enumerate(train_dataset):
             inputs  = ToTensor()(inputs)
+            inputs = inputs.unsqueeze(0)
+            print(inputs.shape)
             labels = torch.tensor(labels).to(device)
 
             optimizer.zero_grad()
-            
             outputs = model(inputs)
  
             loss = loss_function(outputs, labels)
