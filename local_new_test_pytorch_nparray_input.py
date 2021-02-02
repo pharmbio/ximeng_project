@@ -159,7 +159,7 @@ def train_and_valid(model, loss_function, optimizer, epochs=10):
 
 num_epochs = 10
 trained_model, history = train_and_valid(resnet50, loss_function, optimizer, num_epochs)
-torch.save(history, 'models/'+"5channels_test1"+'_history.pt')
+torch.save(history, 'C:/Files/lab/'+"5channels_test1"+'_history.pt')
  
 history = np.array(history)
 plt.plot(history[:, 0:2])
