@@ -35,89 +35,32 @@ test_dataset = CustomDataset("/home/jovyan/mnt/external-images-pvc/ximeng/csv_fi
 train_data_size = len(train_dataset)
 valid_data_size = len(valid_dataset)
 test_data_size = len(test_dataset)
+train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=4, shuffle=True, num_workers=0)
+valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=4, shuffle=True, num_workers=0)
+test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=4, shuffle=True, num_workers=0)
 
 def main_nn():
-    # print(model)
-    # layer = model.conv1
-            
-    
-    # new_layer = nn.Conv2d(in_channels=5, 
-    #                 out_channels=layer.out_channels, 
-    #                 kernel_size=3, 
-    #                 stride=1937, 
-    #                 padding=layer.padding,
-    #                 bias=layer.bias)
 
-    # copy_weights = 0 
-    
-    # pretrained_weights = layer.weight.clone()
-    # new_layer.weight[:,:3,:,:] = torch.nn.Parameter(pretrained_weights)
-    # new_layer.weight[:,3,:,:] = torch.nn.Parameter(pretrained_weights[:,1,:,:])
-    # #new_layer.weight[:, :layer.in_channels, :, :] = layer.weight.clone()
-
-    # for i in range(5 - layer.in_channels):
-    #     channel = layer.in_channels + i
-    #     new_layer.weight[:, channel:channel+1, :, :] = layer.weight[:, copy_weights:copy_weights+1, : :].clone()
-    # new_layer.weight = nn.Parameter(new_layer.weight)
-    # model.conv1 = new_layer    
-    
-    # print(model)
     model = models.resnet50(pretrained= True)
     fc_inputs = model.fc.in_features
     model.fc = nn.Sequential(
         nn.Linear(fc_inputs, 2),
         nn.LogSoftmax(dim=1))    
-    
-    # layer = model.conv1
-    # new_layer = nn.Conv2d(in_channels=5, 
-    #                 out_channels=layer.out_channels, 
-    #                 kernel_size=3, 
-    #                 stride=1937, 
-    #                 padding=layer.padding,
-    #                 bias=layer.bias)
-
-    # copy_weights = 0 
-    
-    # pretrained_weights = layer.weight.clone()
-    # new_layer.weight[:,:3,:,:] = torch.nn.Parameter(pretrained_weights)
-    # new_layer.weight[:,3,:,:] = torch.nn.Parameter(pretrained_weights[:,1,:,:])
-    # new_layer.weight[:, :layer.in_channels, :, :] = layer.weight.clone()
-
-    # for i in range(5 - layer.in_channels):
-    #     channel = layer.in_channels + i
-    #     new_layer.weight[:, channel:channel+1, :, :] = layer.weight[:, copy_weights:copy_weights+1, : :].clone()
-    # new_layer.weight = nn.Parameter(new_layer.weight)
-    # model.conv1 = new_layer   
-    # new_max_pool = nn.AdaptiveAvgPool2d(3)
-    # model.maxpool = new_max_pool
-    # layer = model.conv1
-    # new_layer = nn.Conv2d(in_channels=5, 
-    #                 out_channels=layer.out_channels, 
-    #                 kernel_size=3, 
-    #                 stride=1937, 
-    #                 padding=layer.padding,
-    #                 bias=layer.bias)
-
-    # copy_weights = 0 
-    
-    # new_layer.weight.data = torch.ones([64,3,3,3])
-
-    # for i in range(5 - layer.in_channels):
-    #     channel = layer.in_channels + i
-    #     new_layer.weight[:, channel:channel+1, :, :] = layer.weight[:, copy_weights:copy_weights+1, : :].clone()
-    #new_layer.weight = nn.Parameter(new_layer.weight)
     second_layer = nn.AdaptiveAvgPool2d(3)
     model = nn.Sequential(
          nn.Conv2d(in_channels=5, 
-                    out_channels=1, 
+                    out_channels=3, 
                     kernel_size=3, 
-                    stride=1937, 
+                    stride=3, 
                     padding=0,
                     bias=False),
         model)
     print(model)
 
-    model = model.to('cuda:0')
+    
+    if torch.cuda.is_available():
+        model.cuda()
+
      
 
 
@@ -128,7 +71,16 @@ def main_nn():
 
 resnet50,loss_function,optimizer = main_nn()
 
+
 def train_and_valid(model, loss_function, optimizer, epochs=10):
+    
+    train_on_gpu = torch.cuda.is_available()
+
+    if train_on_gpu:
+        print("CUDA is available! Training on GPU...")
+    else:
+        print("CUDA is not available. Training on CPU...")
+    
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     history = []
     best_acc = 0.0
@@ -144,10 +96,10 @@ def train_and_valid(model, loss_function, optimizer, epochs=10):
         train_acc = 0.0
         valid_loss = 0.0
         valid_acc = 0.0
- 
-        for i, (inputs, labels) in enumerate(train_dataset):
-            inputs  = ToTensor()(inputs)
-            labels = torch.tensor(labels).to(device)
+        for i, (inputs, labels) in enumerate(train_dataloader):
+            inputs = torch.tensor(inputs, dtype=torch.float32)
+            inputs = inputs.transpose(1, 3).contiguous()
+            inputs, labels = inputs.to(device), labels.to(device)
 
             optimizer.zero_grad()
             outputs = model(inputs)
@@ -168,10 +120,10 @@ def train_and_valid(model, loss_function, optimizer, epochs=10):
         with torch.no_grad():
             model.eval()
  
-            for j, (inputs, labels) in enumerate(valid_dataset):
-                inputs  = ToTensor()(inputs)
-                labels = torch.tensor(labels).to(device)
- 
+            for j, (inputs, labels) in enumerate(valid_dataloader):
+                inputs = torch.tensor(inputs, dtype=torch.float32)
+                inputs = inputs.transpose(1, 3).contiguous()
+                inputs, labels = inputs.to(device), labels.to(device)
                 outputs = model(inputs)
  
                 loss = loss_function(outputs, labels)
@@ -204,14 +156,14 @@ def train_and_valid(model, loss_function, optimizer, epochs=10):
         ))
         print("Best Accuracy for validation : {:.4f} at epoch {:03d}".format(best_acc, best_epoch))
  
-        torch.save(model, 'models/'+'_model_'+str(epoch+1)+'.pt')
+        torch.save(model, '/home/jovyan/repo/ximeng_project/Outputs/'+'model_'+str(epoch+1)+'.pt')
         
     return model, history
 
 
 num_epochs = 10
 trained_model, history = train_and_valid(resnet50, loss_function, optimizer, num_epochs)
-torch.save(history, 'models/'+"5channels_test1"+'_history.pt')
+torch.save(history, '/home/jovyan/repo/ximeng_project/Outputs/'+"5channels_test1"+'_history.pt')
  
 history = np.array(history)
 plt.plot(history[:, 0:2])
@@ -219,7 +171,7 @@ plt.legend(['Tr Loss', 'Val Loss'])
 plt.xlabel('Epoch Number')
 plt.ylabel('Loss')
 plt.ylim(0, 1)
-plt.savefig('_loss_curve.png')
+plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+'_loss_curve.png')
 plt.show()
  
 plt.plot(history[:, 2:4])
@@ -227,5 +179,5 @@ plt.legend(['Tr Accuracy', 'Val Accuracy'])
 plt.xlabel('Epoch Number')
 plt.ylabel('Accuracy')
 plt.ylim(0, 1)
-plt.savefig('_accuracy_curve.png')
+plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+'_accuracy_curve.png')
 

@@ -117,8 +117,6 @@ def train_and_valid(model, loss_function, optimizer, epochs=10):
                 #inputs = inputs.unsqueeze(0)
                 inputs = inputs.transpose(1, 3).contiguous()
                 labels = torch.tensor(labels).to(device)
-            
-                labels = torch.tensor(labels).to(device)
  
                 outputs = model(inputs)
  
