@@ -35,9 +35,9 @@ test_dataset = CustomDataset("/home/jovyan/mnt/external-images-pvc/ximeng/csv_fi
 train_data_size = len(train_dataset)
 valid_data_size = len(valid_dataset)
 test_data_size = len(test_dataset)
-train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=4, shuffle=True, num_workers=0)
-valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=4, shuffle=True, num_workers=0)
-test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=4, shuffle=True, num_workers=0)
+train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=16, shuffle=True, num_workers=0)
+valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=16, shuffle=True, num_workers=0)
+test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=16, shuffle=True, num_workers=0)
 
 def main_nn():
 
