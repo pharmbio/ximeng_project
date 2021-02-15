@@ -35,9 +35,9 @@ test_dataset = CustomDataset("/home/jovyan/mnt/external-images-pvc/ximeng/csv_fi
 train_data_size = len(train_dataset)
 valid_data_size = len(valid_dataset)
 test_data_size = len(test_dataset)
-train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=16, shuffle=True, num_workers=0)
-valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=16, shuffle=True, num_workers=0)
-test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=16, shuffle=True, num_workers=0)
+train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=8, shuffle=True, num_workers=0)
+valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=8, shuffle=True, num_workers=0)
+test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=8, shuffle=True, num_workers=0)
 
 def main_nn():
 
@@ -72,7 +72,7 @@ def main_nn():
 resnet50,loss_function,optimizer = main_nn()
 
 
-def train_and_valid(model, loss_function, optimizer, epochs=10):
+def train_and_valid(model, loss_function, optimizer, epochs=3):
     
     train_on_gpu = torch.cuda.is_available()
 
@@ -156,14 +156,14 @@ def train_and_valid(model, loss_function, optimizer, epochs=10):
         ))
         print("Best Accuracy for validation : {:.4f} at epoch {:03d}".format(best_acc, best_epoch))
  
-        torch.save(model, '/home/jovyan/repo/ximeng_project/Outputs/'+'model_'+str(epoch+1)+'.pt')
+        torch.save(model, '/home/jovyan/repo/ximeng_project/Outputs/'+'0208model_'+str(epoch+1)+'.pt')
         
     return model, history
 
 
-num_epochs = 10
+num_epochs = 3
 trained_model, history = train_and_valid(resnet50, loss_function, optimizer, num_epochs)
-torch.save(history, '/home/jovyan/repo/ximeng_project/Outputs/'+"5channels_test1"+'_history.pt')
+torch.save(history, '/home/jovyan/repo/ximeng_project/Outputs/'+"02085channels_test1"+'_history.pt')
  
 history = np.array(history)
 plt.plot(history[:, 0:2])
@@ -171,7 +171,7 @@ plt.legend(['Tr Loss', 'Val Loss'])
 plt.xlabel('Epoch Number')
 plt.ylabel('Loss')
 plt.ylim(0, 1)
-plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+'_loss_curve.png')
+plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+'0208_loss_curve.png')
 plt.show()
  
 plt.plot(history[:, 2:4])
@@ -179,5 +179,5 @@ plt.legend(['Tr Accuracy', 'Val Accuracy'])
 plt.xlabel('Epoch Number')
 plt.ylabel('Accuracy')
 plt.ylim(0, 1)
-plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+'_accuracy_curve.png')
+plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+'0208_accuracy_curve.png')
 

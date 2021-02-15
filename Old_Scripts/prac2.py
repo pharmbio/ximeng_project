@@ -17,20 +17,22 @@ def main():
     biggest_three_group = biggest_three_groups(dataframe)
     ##Find the 3 biggest families that do not have overlap between each other in the data
     unique_families_biggest = unique_family_biggest(dataframe)
+    print(unique_families_biggest)
     ##Find the 3 biggest group that do not have overlap between each other in the data
     unique_groups_biggest = unique_group_biggest(dataframe)
+    print(unique_groups_biggest)
     ##get the name list of images
-    image_names = image_file_names()
+    #image_names = image_file_names()
     ##sort images to subfolder by control/compound using biggest 3 groups/families image data
-    for name in image_names:
-         sort_images_by_groups(name,dataframe)
-         sort_images_by_families(name,dataframe)
+    #for name in image_names:
+    #     sort_images_by_groups(name,dataframe)
+    #    sort_images_by_families(name,dataframe)
     
     print('Good Bye')
 
 
 def read_dataframe():
-    return pd.read_csv("~/scratch-shared/ximeng/KinaseInhibitorData/dataframe.csv",';')
+    return pd.read_csv("/home/jovyan/mnt/external-images-pvc/ximeng/dataset_ximeng.csv",';')
 
 def biggest_three_families(df):
     return df.family.value_counts().index[0:3]
@@ -44,13 +46,13 @@ def unique_family_biggest(df):
     big_family = list(uni_family)
     return uni_family
 def unique_group_biggest(df):
-    uni_group = df.drop_duplicates('compoundname')['group'].value_counts().index[0:3]
+    uni_group = df.drop_duplicates('compoundname')['group'].value_counts().index[0:5]
     global big_group
     big_group = list(uni_group)
     return uni_group
 def image_file_names():
     global image_path
-    image_path='/home/jovyan/scratch-shared/ximeng/KinaseInhibitorData/MiSyHo299'
+    image_path='/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images'
     return os.listdir(image_path)
 
 def sort_images_by_groups(images_names,df):
