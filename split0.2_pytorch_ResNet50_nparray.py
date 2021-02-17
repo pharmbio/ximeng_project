@@ -9,7 +9,7 @@ from torchvision import datasets, models, transforms
 import torch.nn as nn
 import torch.optim as optim
 from torchvision.transforms import ToTensor
-
+torch.cuda.empty_cache()
 class CustomDataset(torch.utils.data.Dataset):
     def __init__(self, csv_path, images_folder, transform = None):
         self.df = pd.read_csv(csv_path,sep = ';')
@@ -46,12 +46,11 @@ def main_nn():
     model.fc = nn.Sequential(
         nn.Linear(fc_inputs, 2),
         nn.LogSoftmax(dim=1))    
-    second_layer = nn.AdaptiveAvgPool2d(3)
     model = nn.Sequential(
          nn.Conv2d(in_channels=5, 
                     out_channels=3, 
                     kernel_size=3, 
-                    stride=3, 
+                    stride=1, 
                     padding=0,
                     bias=False),
         model)
@@ -156,14 +155,14 @@ def train_and_valid(model, loss_function, optimizer, epochs=3):
         ))
         print("Best Accuracy for validation : {:.4f} at epoch {:03d}".format(best_acc, best_epoch))
  
-        torch.save(model, '/home/jovyan/repo/ximeng_project/Outputs/'+'0208model_'+str(epoch+1)+'.pt')
+        #torch.save(model, '/home/jovyan/repo/ximeng_project/Outputs/'+'0208model_'+str(epoch+1)+'.pt')
         
     return model, history
 
 
 num_epochs = 3
 trained_model, history = train_and_valid(resnet50, loss_function, optimizer, num_epochs)
-torch.save(history, '/home/jovyan/repo/ximeng_project/Outputs/'+"02085channels_test1"+'_history.pt')
+torch.save(history, '/home/jovyan/repo/ximeng_project/Outputs/'+"02175channels_test16reesnet50"+'_history.pt')
  
 history = np.array(history)
 plt.plot(history[:, 0:2])
@@ -171,7 +170,7 @@ plt.legend(['Tr Loss', 'Val Loss'])
 plt.xlabel('Epoch Number')
 plt.ylabel('Loss')
 plt.ylim(0, 1)
-plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+'0208_loss_curve.png')
+plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+'0217resnet50_loss_curve.png')
 plt.show()
  
 plt.plot(history[:, 2:4])
@@ -179,5 +178,5 @@ plt.legend(['Tr Accuracy', 'Val Accuracy'])
 plt.xlabel('Epoch Number')
 plt.ylabel('Accuracy')
 plt.ylim(0, 1)
-plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+'0208_accuracy_curve.png')
+plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+'0217resnet50_accuracy_curve.png')
 
