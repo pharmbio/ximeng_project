@@ -2,6 +2,7 @@ import torch
 import pandas as pd
 import PIL
 import os
+import gc
 import matplotlib.pyplot as plt
 import time
 import numpy as np
@@ -9,6 +10,8 @@ from torchvision import datasets, models, transforms
 import torch.nn as nn
 import torch.optim as optim
 from torchvision.transforms import ToTensor
+
+gc.collect()
 torch.cuda.empty_cache()
 class CustomDataset(torch.utils.data.Dataset):
     def __init__(self, csv_path, images_folder, transform = None):
@@ -35,9 +38,9 @@ test_dataset = CustomDataset("/home/jovyan/mnt/external-images-pvc/ximeng/csv_fi
 train_data_size = len(train_dataset)
 valid_data_size = len(valid_dataset)
 test_data_size = len(test_dataset)
-train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=8, shuffle=True, num_workers=0)
-valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=8, shuffle=True, num_workers=0)
-test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=8, shuffle=True, num_workers=0)
+train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=16, shuffle=True, num_workers=0)
+valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=16, shuffle=True, num_workers=0)
+test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=16, shuffle=True, num_workers=0)
 
 def main_nn():
 
@@ -50,7 +53,7 @@ def main_nn():
          nn.Conv2d(in_channels=5, 
                     out_channels=3, 
                     kernel_size=3, 
-                    stride=1, 
+                    stride=3, 
                     padding=0,
                     bias=False),
         model)
@@ -71,7 +74,7 @@ def main_nn():
 resnet50,loss_function,optimizer = main_nn()
 
 
-def train_and_valid(model, loss_function, optimizer, epochs=3):
+def train_and_valid(model, loss_function, optimizer, epochs=5):
     
     train_on_gpu = torch.cuda.is_available()
 
@@ -135,7 +138,7 @@ def train_and_valid(model, loss_function, optimizer, epochs=3):
                 acc = torch.mean(correct_counts.type(torch.FloatTensor))
  
                 valid_acc += acc.item() * inputs.size(0)
- 
+
         avg_train_loss = train_loss/train_data_size
         avg_train_acc = train_acc/train_data_size
  
@@ -147,20 +150,21 @@ def train_and_valid(model, loss_function, optimizer, epochs=3):
         if best_acc < avg_valid_acc:
             best_acc = avg_valid_acc
             best_epoch = epoch + 1
- 
+
         epoch_end = time.time()
  
         print("Epoch: {:03d}, Training: Loss: {:.4f}, Accuracy: {:.4f}%, \n\t\tValidation: Loss: {:.4f}, Accuracy: {:.4f}%, Time: {:.4f}s".format(
             epoch+1, avg_valid_loss, avg_train_acc*100, avg_valid_loss, avg_valid_acc*100, epoch_end-epoch_start
         ))
         print("Best Accuracy for validation : {:.4f} at epoch {:03d}".format(best_acc, best_epoch))
- 
+        gc.collect()
+        torch.cuda.empty_cache()
         #torch.save(model, '/home/jovyan/repo/ximeng_project/Outputs/'+'0208model_'+str(epoch+1)+'.pt')
         
     return model, history
 
 
-num_epochs = 3
+num_epochs = 5
 trained_model, history = train_and_valid(resnet50, loss_function, optimizer, num_epochs)
 torch.save(history, '/home/jovyan/repo/ximeng_project/Outputs/'+"02175channels_test16reesnet50"+'_history.pt')
  

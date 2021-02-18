@@ -9,6 +9,7 @@ from torchvision import datasets, models, transforms
 import torch.nn as nn
 import torch.optim as optim
 from torchvision.transforms import ToTensor
+import segmentation_models_pytorch as smp
 
 class CustomDataset(torch.utils.data.Dataset):
     def __init__(self, csv_path, images_folder, transform = None):
@@ -41,12 +42,12 @@ test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=8, shuffl
 
 def main_nn():
 
-    model = models.resnet50(pretrained= True)
-    fc_inputs = model.fc.in_features
-    model.fc = nn.Sequential(
-        nn.Linear(fc_inputs, 2),
-        nn.LogSoftmax(dim=1))    
-    second_layer = nn.AdaptiveAvgPool2d(3)
+    model = smp.Unet('resnet50', encoder_weights='imagenet', classes=2, activation='softmax')
+    #fc_inputs = model.fc.in_features
+    #model.fc = nn.Sequential(
+        #nn.Linear(fc_inputs, 2),
+        #nn.LogSoftmax(dim=1))    
+    
     model = nn.Sequential(
          nn.Conv2d(in_channels=5, 
                     out_channels=3, 
@@ -59,7 +60,7 @@ def main_nn():
 
     
     if torch.cuda.is_available():
-        model.cuda()
+        model.to(torch.device('cuda:1'))
 
      
 
@@ -81,7 +82,7 @@ def train_and_valid(model, loss_function, optimizer, epochs=3):
     else:
         print("CUDA is not available. Training on CPU...")
     
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
     history = []
     best_acc = 0.0
     best_epoch = 0
