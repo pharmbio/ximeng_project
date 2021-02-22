@@ -60,7 +60,7 @@ def main_nn():
 
     
     if torch.cuda.is_available():
-        model.to(torch.device('cuda:1'))
+        model.to(torch.device('cuda:0'))
 
      
 
@@ -82,7 +82,7 @@ def train_and_valid(model, loss_function, optimizer, epochs=3):
     else:
         print("CUDA is not available. Training on CPU...")
     
-    device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     history = []
     best_acc = 0.0
     best_epoch = 0

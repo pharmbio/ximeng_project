@@ -62,7 +62,7 @@ def main_nn():
 
     
     if torch.cuda.is_available():
-        model.to(torch.device('cuda:1'))
+        model.to(torch.device('cuda:0'))
 
      
 
@@ -74,8 +74,20 @@ def main_nn():
 
 resnet50,loss_function,optimizer = main_nn()
 
+params = resnet50.state_dict()
+params.keys()
+for name, param in resnet50.named_parameters():
+    if param.requires_grad and '1.layer' in name:
+        param.requires_grad = False
 
-def train_and_valid(model, loss_function, optimizer, epochs=30):
+for name, param in resnet50.named_parameters():
+    print(name, param)
+optimizer = optim.SGD(filter(lambda p: p.requires_grad, resnet50.parameters()), lr=0.1)
+for p in filter(lambda p: p.requires_grad, resnet50.parameters()):
+    print(p)
+
+
+def train_and_valid(model, loss_function, optimizer, epochs=5):
     
     train_on_gpu = torch.cuda.is_available()
 
@@ -84,7 +96,7 @@ def train_and_valid(model, loss_function, optimizer, epochs=30):
     else:
         print("CUDA is not available. Training on CPU...")
     
-    device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     history = []
     best_acc = 0.0
     best_epoch = 0
@@ -165,9 +177,10 @@ def train_and_valid(model, loss_function, optimizer, epochs=30):
     return model, history
 
 
-num_epochs = 30
+num_epochs = 5
+save_name = '0222freeze_all_resnet50'
 trained_model, history = train_and_valid(resnet50, loss_function, optimizer, num_epochs)
-torch.save(history, '/home/jovyan/repo/ximeng_project/Outputs/'+"02195channels_test16reesnet50"+'_history.pt')
+torch.save(history, '/home/jovyan/repo/ximeng_project/Outputs/'+save_name+'_history.pt')
  
 history = np.array(history)
 plt.plot(history[:, 0:2])
@@ -175,7 +188,7 @@ plt.legend(['Tr Loss', 'Val Loss'])
 plt.xlabel('Epoch Number')
 plt.ylabel('Loss')
 plt.ylim(0, 1)
-plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+'0219resnet50_loss_curve.png')
+plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+ save_name + '_loss_curve.png')
 plt.show()
  
 plt.plot(history[:, 2:4])
@@ -183,5 +196,5 @@ plt.legend(['Tr Accuracy', 'Val Accuracy'])
 plt.xlabel('Epoch Number')
 plt.ylabel('Accuracy')
 plt.ylim(0, 1)
-plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+'0219resnet50_accuracy_curve.png')
+plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+ save_name +'_accuracy_curve.png')
 
