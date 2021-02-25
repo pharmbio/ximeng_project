@@ -16,7 +16,7 @@ import torch
 print(torch.__version__) 
 #python /home/jovyan/repo/ximeng_project/split0.2_pytorch_ResNet50_nparray.py &> /home/jovyan/repo/ximeng_project/Outputs/TerminalOutput0219resnet50.txt
 #python /home/jovyan/repo/ximeng_project/split0.2_ResNet50_freeze.py &> /home/jovyan/repo/ximeng_project/Outputs/TerminalOutput0222resnet50freeze.txt
-#python /home/jovyan/repo/ximeng_project/split0.2_pytorch_VGG19.py &> /home/jovyan/repo/ximeng_project/Outputs/TerminalOutput0222vgg19.txt
+#python /home/jovyan/repo/ximeng_project/fc_adapavepool_biggroups_ResNet50.py > /home/jovyan/repo/ximeng_project/Outputs/TerminalOutput0224fc_adapavepool_biggroups_ResNet50.txt
 
 import torch
 from transformers import AutoTokenizer, AutoModelWithLMHead
