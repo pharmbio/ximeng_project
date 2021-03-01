@@ -182,3 +182,42 @@ Sequential(
 )
 CUDA is available! Training on GPU...
 Epoch: 1/10
+Epoch: 001, Training: Loss: 1.2252, Accuracy: 44.8971%, 
+		Validation: Loss: 1.2252, Accuracy: 48.0936%, Time: 12542.9260s
+Best Accuracy for validation : 0.4809 at epoch 001
+Epoch: 2/10
+Epoch: 002, Training: Loss: 1.2033, Accuracy: 46.5222%, 
+		Validation: Loss: 1.2033, Accuracy: 47.4003%, Time: 3516.3711s
+Best Accuracy for validation : 0.4809 at epoch 001
+Epoch: 3/10
+Epoch: 003, Training: Loss: 1.2437, Accuracy: 46.0238%, 
+		Validation: Loss: 1.2437, Accuracy: 46.1872%, Time: 3392.3884s
+Best Accuracy for validation : 0.4809 at epoch 001
+Epoch: 4/10
+Epoch: 004, Training: Loss: 1.5109, Accuracy: 46.0238%, 
+		Validation: Loss: 1.5109, Accuracy: 47.8336%, Time: 3484.9238s
+Best Accuracy for validation : 0.4809 at epoch 001
+Epoch: 5/10
+Epoch: 005, Training: Loss: 1.1610, Accuracy: 46.8906%, 
+		Validation: Loss: 1.1610, Accuracy: 48.8735%, Time: 3550.2332s
+Best Accuracy for validation : 0.4887 at epoch 005
+Epoch: 6/10
+Epoch: 006, Training: Loss: 1.2252, Accuracy: 47.4323%, 
+		Validation: Loss: 1.2252, Accuracy: 45.2340%, Time: 3374.2075s
+Best Accuracy for validation : 0.4887 at epoch 005
+Epoch: 7/10
+Epoch: 007, Training: Loss: 1.1330, Accuracy: 48.1257%, 
+		Validation: Loss: 1.1330, Accuracy: 50.0000%, Time: 3433.4169s
+Best Accuracy for validation : 0.5000 at epoch 007
+Epoch: 8/10
+Epoch: 008, Training: Loss: 1.1554, Accuracy: 48.1473%, 
+		Validation: Loss: 1.1554, Accuracy: 48.7002%, Time: 3366.0427s
+Best Accuracy for validation : 0.5000 at epoch 007
+Epoch: 9/10
+Epoch: 009, Training: Loss: 1.3613, Accuracy: 48.0823%, 
+		Validation: Loss: 1.3613, Accuracy: 45.5806%, Time: 3995.7185s
+Best Accuracy for validation : 0.5000 at epoch 007
+Epoch: 10/10
+Epoch: 010, Training: Loss: 1.1875, Accuracy: 50.0325%, 
+		Validation: Loss: 1.1875, Accuracy: 48.5269%, Time: 3518.3175s
+Best Accuracy for validation : 0.5000 at epoch 007

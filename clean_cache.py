@@ -39,3 +39,10 @@ for obj in gc.get_objects():
             print(type(obj), obj.size())
     except:
         pass
+
+
+
+
+
+
+#cp -r /home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images/. scratch-shared/ximeng/five_channel_images
