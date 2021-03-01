@@ -37,8 +37,8 @@ train_dataset = CustomDataset("/home/jovyan/mnt/external-images-pvc/ximeng/csv_f
 valid_dataset = CustomDataset("/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/testdataset.csv", "/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images"  )
 train_data_size = len(train_dataset)
 valid_data_size = len(valid_dataset)
-train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=6, shuffle=True, num_workers=0)
-valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=6, shuffle=True, num_workers=0)
+train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=6, shuffle=True, num_workers=2)
+valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=6, shuffle=True, num_workers=2)
 
 
 def main_nn():
