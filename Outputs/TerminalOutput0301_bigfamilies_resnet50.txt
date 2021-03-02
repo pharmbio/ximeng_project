@@ -27,3 +27,14 @@ Epoch: 007, Training: Loss: 1.0486, Accuracy: 51.5481%,
 		Validation: Loss: 1.0486, Accuracy: 58.8629%, Time: 3714.8490s
 Best Accuracy for validation : 0.5886 at epoch 007
 Epoch: 8/10
+Epoch: 008, Training: Loss: 1.1037, Accuracy: 52.7615%, 
+		Validation: Loss: 1.1037, Accuracy: 55.6856%, Time: 4276.3396s
+Best Accuracy for validation : 0.5886 at epoch 007
+Epoch: 9/10
+Epoch: 009, Training: Loss: 1.0833, Accuracy: 54.8536%, 
+		Validation: Loss: 1.0833, Accuracy: 57.5251%, Time: 4383.0715s
+Best Accuracy for validation : 0.5886 at epoch 007
+Epoch: 10/10
+Epoch: 010, Training: Loss: 1.0954, Accuracy: 54.0167%, 
+		Validation: Loss: 1.0954, Accuracy: 56.3545%, Time: 4254.4943s
+Best Accuracy for validation : 0.5886 at epoch 007

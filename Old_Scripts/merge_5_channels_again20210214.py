@@ -35,28 +35,28 @@ file_name_list =  os.listdir(image_path_1)
 df = pd.read_csv("/home/jovyan/mnt/external-images-pvc/ximeng/dataset_ximeng.csv",';')
 
 
-# add_group = ['CMGC', 'Atypical']
-# for index, row in df.iterrows():
-#     if row['group'] in add_group:
-#         image_1 = cv2.imread(image_path_1 +"/" + str(index) + ".tif",-1)
-#         image_2 = cv2.imread(image_path_2 +"/" + str(index) + ".tif",-1)
-#         image_3 = cv2.imread(image_path_3 +"/" + str(index) + ".tif",-1)
-#         image_4 = cv2.imread(image_path_4 +"/" + str(index) + ".tif",-1)
-#         image_5 = cv2.imread(image_path_5 +"/" + str(index) + ".tif",-1)
+add_group = ['AGC']
+for index, row in df.iterrows():
+    if row['group'] in add_group:
+        image_1 = cv2.imread(image_path_1 +"/" + str(index) + ".tif",-1)
+        image_2 = cv2.imread(image_path_2 +"/" + str(index) + ".tif",-1)
+        image_3 = cv2.imread(image_path_3 +"/" + str(index) + ".tif",-1)
+        image_4 = cv2.imread(image_path_4 +"/" + str(index) + ".tif",-1)
+        image_5 = cv2.imread(image_path_5 +"/" + str(index) + ".tif",-1)
 
 
-#         five_channel_image = np.zeros((image_1.shape[0], image_1.shape[1], 5))
-#         five_channel_image [:,:,0] = image_1
-#         five_channel_image [:,:,1] = image_2
-#         five_channel_image [:,:,2] = image_3
-#         five_channel_image [:,:,3] = image_4
-#         five_channel_image [:,:,4] = image_5
-#         print(index)
-#         np.save(target_path + str(index), five_channel_image)
+        five_channel_image = np.zeros((image_1.shape[0], image_1.shape[1], 5))
+        five_channel_image [:,:,0] = image_1
+        five_channel_image [:,:,1] = image_2
+        five_channel_image [:,:,2] = image_3
+        five_channel_image [:,:,3] = image_4
+        five_channel_image [:,:,4] = image_5
+        print(index)
+        np.save(target_path + str(index), five_channel_image)
 
 
 #remove 'other' group
-other_group = ['Other']
+other_group = ['Atypical']
 for index, row in df.iterrows():
     if row['group'] in other_group:
         print(str(index))

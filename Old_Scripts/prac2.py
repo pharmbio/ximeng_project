@@ -46,7 +46,7 @@ def unique_family_biggest(df):
     big_family = list(uni_family)
     return uni_family
 def unique_group_biggest(df):
-    uni_group = df.drop_duplicates('compoundname')['group'].value_counts().index[0:5]
+    uni_group = df.drop_duplicates('compoundname')['group'].value_counts().index[0:6]
     global big_group
     big_group = list(uni_group)
     return uni_group
