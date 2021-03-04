@@ -39,3 +39,43 @@ Epoch: 010, Training: Loss: 0.9520, Accuracy: 62.0192%,
 		Validation: Loss: 0.9520, Accuracy: 56.4103%, Time: 3223.5918s
 Best Accuracy for validation : 0.6688 at epoch 008
 Epoch: 11/40
+Epoch: 011, Training: Loss: 0.8302, Accuracy: 62.8739%, 
+		Validation: Loss: 0.8302, Accuracy: 64.1026%, Time: 3238.1144s
+Best Accuracy for validation : 0.6688 at epoch 008
+Epoch: 12/40
+Epoch: 012, Training: Loss: 1.2597, Accuracy: 62.6603%, 
+		Validation: Loss: 1.2597, Accuracy: 64.3162%, Time: 3242.3267s
+Best Accuracy for validation : 0.6688 at epoch 008
+Epoch: 13/40
+Epoch: 013, Training: Loss: 0.7660, Accuracy: 61.5385%, 
+		Validation: Loss: 0.7660, Accuracy: 63.6752%, Time: 3079.4088s
+Best Accuracy for validation : 0.6688 at epoch 008
+Epoch: 14/40
+Epoch: 014, Training: Loss: 0.7521, Accuracy: 62.8205%, 
+		Validation: Loss: 0.7521, Accuracy: 65.1709%, Time: 3181.2634s
+Best Accuracy for validation : 0.6688 at epoch 008
+Epoch: 15/40
+Epoch: 015, Training: Loss: 1.5360, Accuracy: 63.3013%, 
+		Validation: Loss: 1.5360, Accuracy: 41.8803%, Time: 3340.8159s
+Best Accuracy for validation : 0.6688 at epoch 008
+Epoch: 16/40
+Epoch: 016, Training: Loss: 0.7886, Accuracy: 64.1026%, 
+		Validation: Loss: 0.7886, Accuracy: 64.5299%, Time: 3346.4218s
+Best Accuracy for validation : 0.6688 at epoch 008
+Epoch: 17/40
+Epoch: 017, Training: Loss: 0.8852, Accuracy: 62.8739%, 
+		Validation: Loss: 0.8852, Accuracy: 67.0940%, Time: 3341.0870s
+Best Accuracy for validation : 0.6709 at epoch 017
+Epoch: 18/40
+Epoch: 018, Training: Loss: 0.8911, Accuracy: 63.8355%, 
+		Validation: Loss: 0.8911, Accuracy: 64.5299%, Time: 3350.6343s
+Best Accuracy for validation : 0.6709 at epoch 017
+Epoch: 19/40
+Epoch: 019, Training: Loss: 1.4403, Accuracy: 65.2778%, 
+		Validation: Loss: 1.4403, Accuracy: 39.5299%, Time: 3300.0848s
+Best Accuracy for validation : 0.6709 at epoch 017
+Epoch: 20/40
+Epoch: 020, Training: Loss: 1.0753, Accuracy: 66.0256%, 
+		Validation: Loss: 1.0753, Accuracy: 67.3077%, Time: 3304.3499s
+Best Accuracy for validation : 0.6731 at epoch 020
+Epoch: 21/40

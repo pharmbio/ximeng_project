@@ -20,15 +20,15 @@ def main():
     valid_dataset = CustomDataset('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/big_3_groups_test_dataset.csv', "/home/jovyan/scratch-shared/ximeng/five_channel_images"  )
     train_data_size = len(train_dataset)
     valid_data_size = len(valid_dataset)
-    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=8, shuffle=True, num_workers=1)
-    valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=8, shuffle=True, num_workers=1)
+    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=22, shuffle=True, num_workers=1)
+    valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=22, shuffle=True, num_workers=1)
     
-    working_device = "cuda:1" #if torch.cuda.is_available() else "cpu"
-    resnet50,loss_function,optimizer = main_nn(working_device)
+    working_device = "cuda:0" #if torch.cuda.is_available() else "cpu"
+    resnet18,loss_function,optimizer = main_nn(working_device)
 
     num_epochs = 40
-    file_save_name = '0303_biggroups_resnet50_40epoch'
-    trained_model, history = train_and_valid(working_device, resnet50, loss_function, optimizer, num_epochs, train_dataloader, valid_dataloader, train_data_size,valid_data_size)
+    file_save_name = '0304_biggroups_resnet18_epoch40'
+    trained_model, history = train_and_valid(working_device, resnet18, loss_function, optimizer, num_epochs, train_dataloader, valid_dataloader, train_data_size,valid_data_size)
     
     save_and_plot(history, file_save_name)
     
@@ -54,7 +54,7 @@ class CustomDataset(torch.utils.data.Dataset):
        
 
 def main_nn(working_device):
-    model = models.resnet50(pretrained= True)
+    model = models.resnet18(pretrained= True)
     fc_inputs = model.fc.in_features
     model.fc = nn.Sequential(
         nn.Linear(fc_inputs, 4),
