@@ -60,5 +60,5 @@ other_group = ['Atypical']
 for index, row in df.iterrows():
     if row['group'] in other_group:
         print(str(index))
-        os.remove('/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images/' + str(index) + '.npy')
+        os.remove('/home/jovyan/scratch-shared/ximeng/five_channel_images/' + str(index) + '.npy')
 
