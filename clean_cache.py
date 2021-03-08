@@ -16,8 +16,9 @@ import torch
 print(torch.__version__) 
 #python /home/jovyan/repo/ximeng_project/split0.2_pytorch_ResNet50_nparray.py &> /home/jovyan/repo/ximeng_project/Outputs/TerminalOutput0219resnet50.txt
 #python /home/jovyan/repo/ximeng_project/split0.2_ResNet50_freeze.py &> /home/jovyan/repo/ximeng_project/Outputs/TerminalOutput0222resnet50freeze.txt
-#python /home/jovyan/repo/ximeng_project/template_split0.2_bigfamilies_ResNet50_epoch40.py > /home/jovyan/repo/ximeng_project/Outputs/TerminalOutput0303_bigfamilies_resnet50_40epoch.txt
-#python /home/jovyan/repo/ximeng_project/template_split0.2_biggroups_ResNet50_epoch40.py > /home/jovyan/repo/ximeng_project/Outputs/TerminalOutput0304_biggroups_resnet50_40epoch.txt
+
+#python /home/jovyan/repo/ximeng_project/savemore_split0.2_bigfamilies_ResNet50_epoch10.py > /home/jovyan/repo/ximeng_project/Outputs/TerminalOutput0308_savemore_bigfamilies_resnet50_10epoch.txt
+#python /home/jovyan/repo/ximeng_project/savemore_split0.2_bigfamilies_Xception_epoch5.py > /home/jovyan/repo/ximeng_project/Outputs/TerminalOutput0308_bigfamilies_ Xception_epoch5.txt
 
 ## (as per the discussion here: https://discuss.pytorch.org/t/how-to-debug-causes-of-gpu-memory-leaks/6741/3, seeing all the hanging tensors)
 import gc
