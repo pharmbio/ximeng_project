@@ -280,3 +280,6 @@ Xception(
   (last_linear): Linear(in_features=2048, out_features=4, bias=True)
 )
 Epoch: 1/5
+Epoch: 001, Training: Loss: -272.9023, Accuracy: 53.2585%, 
+		Validation: Loss: -272.9023, Accuracy: 59.8291%, Time: 5463.8849s
+Best Accuracy for validation : 0.5983 at epoch 001

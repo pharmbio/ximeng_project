@@ -126,7 +126,7 @@ def train_and_valid(working_device, model, loss_function, optimizer, epochs, tra
             filenames.extend('from here start eval')
             class_preds.extend('from here start eval')
             class_true.extend('from here start eval')
-            for j, (inputs, labels) in enumerate(valid_dataloader):
+            for j, (inputs, labels,filename) in enumerate(valid_dataloader):
                 inputs = torch.tensor(inputs, dtype=torch.float32)
                 inputs = inputs.transpose(1, 3).contiguous()
                 inputs, labels = inputs.to(device), labels.to(device)
@@ -166,9 +166,12 @@ def train_and_valid(working_device, model, loss_function, optimizer, epochs, tra
         print("Best Accuracy for validation : {:.4f} at epoch {:03d}".format(best_acc, best_epoch))
 
         torch.cuda.empty_cache()
-        filenames.extend('from here start epoch no.' + epoch)
-        class_preds.extend('from here start epoch no.' + epoch)
-        class_true.extend('from here start epoch no.' + epoch)
+        np.savetxt('/home/jovyan/repo/ximeng_project/Outputs/'+str(epoch)+'filenames.txt', filenames, delimiter=';')    
+        np.savetxt('/home/jovyan/repo/ximeng_project/Outputs/'+str(epoch)+'class_preds.txt', class_preds, delimiter=';')
+        np.savetxt('/home/jovyan/repo/ximeng_project/Outputs/'+str(epoch)+'class_true.txt', class_true, delimiter=';')
+        filenames.extend('from here start epoch no.' + str(epoch))
+        class_preds.extend('from here start epoch no.' + str(epoch))
+        class_true.extend('from here start epoch no.' + str(epoch))
     return model, history, filenames, class_preds, class_true
 
 
