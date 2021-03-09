@@ -25,7 +25,7 @@ def main():
     resnet50,loss_function,optimizer = main_nn(working_device)
 
     num_epochs = 5
-    file_save_name = '0308_bigfamilies_resnet50_20epoch'
+    file_save_name = '0309_bigfamilies_resnet50_5epoch'
     trained_model, history, filenames, class_preds, class_true= train_and_valid(working_device, resnet50, loss_function, optimizer, num_epochs, train_dataloader, valid_dataloader, train_data_size,valid_data_size)
     
     save_and_plot(trained_model, history, file_save_name, filenames, class_preds, class_true)
@@ -163,26 +163,19 @@ def train_and_valid(working_device, model, loss_function, optimizer, epochs, tra
         print("Best Accuracy for validation : {:.4f} at epoch {:03d}".format(best_acc, best_epoch))
 
         #torch.cuda.empty_cache()
-        np.savetxt('/home/jovyan/repo/ximeng_project/Outputs/'+str(epoch)+'filenames.txt', filenames, delimiter=';')    
-        np.savetxt('/home/jovyan/repo/ximeng_project/Outputs/'+str(epoch)+'class_preds.txt', class_preds, delimiter=';')
-        np.savetxt('/home/jovyan/repo/ximeng_project/Outputs/'+str(epoch)+'class_true.txt', class_true, delimiter=';')
+
         filenames.extend('from here start epoch no.' + str(epoch))
         class_preds.extend('from here start epoch no.' + str(epoch))
         class_true.extend('from here start epoch no.' + str(epoch))
+        print(filenames, class_preds, class_true)
     return model, history, filenames, class_preds, class_true
 
 
 def save_and_plot(trained_model, history, file_save_name, filenames, class_preds, class_true):
 
     torch.save(trained_model, '/home/jovyan/repo/ximeng_project/Outputs/'+file_save_name+'_trained_model.pt')
-        
-    np.savetxt(file_save_name+'filenames.txt', filenames, delimiter=';')    
-    np.savetxt(file_save_name+'class_preds.txt', class_preds, delimiter=';')
-    np.savetxt(file_save_name+'class_true.txt', class_true, delimiter=';')
-
-    np.savetxt(file_save_name+'testmixout.txt', (filenames, class_preds, class_true)) 
-
     torch.save(history, '/home/jovyan/repo/ximeng_project/Outputs/'+file_save_name+'_history.pt') 
+    
     history = np.array(history)
     plt.plot(history[:, 0:2])
     plt.legend(['Train Loss', 'Valid Loss'])
@@ -200,6 +193,7 @@ def save_and_plot(trained_model, history, file_save_name, filenames, class_preds
     plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+ file_save_name +'_accuracy_curve.png')
     plt.show()
 
+    np.savetxt('/home/jovyan/repo/ximeng_project/Outputs/'+ file_save_name+'testmixout.txt', (filenames, class_preds, class_true)) 
 
 if __name__ == "__main__":
     main()
