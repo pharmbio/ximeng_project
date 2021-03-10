@@ -193,7 +193,7 @@ def save_and_plot(trained_model, history, file_save_name, filenames, class_preds
     plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+ file_save_name +'_accuracy_curve.png')
     plt.show()
 
-    np.savetxt('/home/jovyan/repo/ximeng_project/Outputs/'+ file_save_name+'testmixout.txt', (filenames, class_preds, class_true)) 
+    np.savetxt('/home/jovyan/repo/ximeng_project/Outputs/'+ file_save_name+'testmixout.csv', [filenames, class_preds, class_true]) 
 
 if __name__ == "__main__":
     main()
