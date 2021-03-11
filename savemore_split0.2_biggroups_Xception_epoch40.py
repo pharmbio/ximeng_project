@@ -13,21 +13,22 @@ import pretrainedmodels
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import ConfusionMatrixDisplay
 
+
 def main():
     torch.cuda.empty_cache()#clean cache before running
     #load data
-    train_dataset = CustomDataset('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/only_big_3_families_train_dataset.csv', "/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images"  )
-    valid_dataset = CustomDataset('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/only_big_3_families_test_dataset.csv', "/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images"  )
+    train_dataset = CustomDataset('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/only_big_3_groups_train_dataset.csv', "/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images"  )
+    valid_dataset = CustomDataset('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/only_big_3_groups_test_dataset.csv', "/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images"  )
     train_data_size = len(train_dataset)
     valid_data_size = len(valid_dataset)
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=6, shuffle=True, num_workers=1)
     valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=6, shuffle=True, num_workers=1)
     
-    working_device = "cuda:0" #if torch.cuda.is_available() else "cpu"
+    working_device = "cuda:1" #if torch.cuda.is_available() else "cpu"
     select_model,loss_function,optimizer = main_nn(working_device)
 
     num_epochs = 40
-    file_save_name = '0310_bigfamilies_Xception_40epoch'
+    file_save_name = '0310_biggroups_Xception_40epoch'
     trained_model, history, filenames, class_preds, class_true= train_and_valid(working_device, select_model, loss_function, optimizer, num_epochs, train_dataloader, valid_dataloader, train_data_size,valid_data_size)
     
     save_and_plot(trained_model, history, file_save_name, filenames, class_preds, class_true)
@@ -39,14 +40,14 @@ class CustomDataset(torch.utils.data.Dataset):
         self.df = pd.read_csv(csv_path,sep = ';')
         self.images_folder = images_folder
         self.transform = transform
-        self.class2index = {"control":0, "EGFR":1, "PIKK":2, "CDK":3}
+        self.class2index ={"control":0, "TK":1, "CMGC":2, "AGC":3}
 
     def __len__(self):
         return len(self.df)
 
     def __getitem__(self, index):
         filename = self.df.loc[index,'id']
-        label =  self.class2index[self.df.loc[index, 'family']]
+        label =  self.class2index[self.df.loc[index, 'group']]
         image = np.load(os.path.join(self.images_folder, str(filename)) + '.npy')
         if self.transform is not None:
             image = self.transform(image)
@@ -167,6 +168,7 @@ def train_and_valid(working_device, model, loss_function, optimizer, epochs, tra
         print("Best Accuracy for validation : {:.4f} at epoch {:03d}".format(best_acc, best_epoch))
 
         #torch.cuda.empty_cache()
+
         print(filenames, class_preds, class_true)
     return model, history, filenames, class_preds, class_true
 
@@ -188,7 +190,7 @@ def save_and_plot(trained_model, history, file_save_name, filenames, class_preds
     y_pred = class_preds
     y_true = class_true
     cm = confusion_matrix(y_true, y_pred,labels=[0,1,2,3], normalize='all')
-    cmplot =  ConfusionMatrixDisplay(cm,display_labels=["control", "EGFR", "PIKK", "CDK"])
+    cmplot =  ConfusionMatrixDisplay(cm,display_labels=["control", "TK", "CMGC", "AGC"])
     cmplot.plot()
     plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+ file_save_name + '_cmplot.png')
     plt.show()

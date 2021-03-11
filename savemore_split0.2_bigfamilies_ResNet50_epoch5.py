@@ -14,8 +14,8 @@ from torchvision.transforms import ToTensor
 def main():
     torch.cuda.empty_cache()#clean cache before running
     #load data
-    train_dataset = CustomDataset('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/only_big_3_families_train_dataset.csv', "/home/jovyan/scratch-shared/ximeng/five_channel_images"  )
-    valid_dataset = CustomDataset('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/only_big_3_families_test_dataset.csv', "/home/jovyan/scratch-shared/ximeng/five_channel_images"  )
+    train_dataset = CustomDataset('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/only_big_3_families_train_dataset.csv', "/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images"  )
+    valid_dataset = CustomDataset('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/only_big_3_families_test_dataset.csv', "/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images"  )
     train_data_size = len(train_dataset)
     valid_data_size = len(valid_dataset)
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=8, shuffle=True, num_workers=1)

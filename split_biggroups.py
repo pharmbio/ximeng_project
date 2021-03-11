@@ -19,19 +19,25 @@
 #save csv file with only biggest 3 groups
 
 import pandas as pd
-df = pd.read_csv('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/march2_big_3_essencial_csv_file.csv', sep = ';',dtype='str')
+df = pd.read_csv('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/march10_big_3_essencial_csv_file.csv', sep = ';',dtype='str')
 
 # #change family column empty to control
 # df.loc[df['type'] == "control",'family'] = 'control'
 # df.to_csv('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/march2_big_3_essencial_csv_file.csv', sep=';',index=None)
 
+#creat a new csv file with only big 3 groups iamges
+big_group = ['TK', 'CMGC', 'AGC']
+big_groups_data = df[(df['group'].isin(['TK', 'CMGC', 'AGC'])) | (df['type'] == "control")]
+print(big_groups_data)
+big_groups_data.to_csv('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/only_big_3_groups.csv')
+
 
 #split train test dataset
 
-df = df.sample(frac=1.0)  # shuffle
-cut_idx = int(round(0.2 * df.shape[0]))
-df_test, df_train = df.iloc[:cut_idx], df.iloc[cut_idx:]
-print (df.shape, df_test.shape, df_train.shape)  
+big_groups_data = big_groups_data.sample(frac=1.0)  # shuffle
+cut_idx = int(round(0.2 * big_groups_data.shape[0]))
+df_test, df_train = big_groups_data.iloc[:cut_idx], big_groups_data.iloc[cut_idx:]
+print (big_groups_data.shape, df_test.shape, df_train.shape)  
 
-df_test.to_csv('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/big_3_groups_test_dataset.csv', sep=';',index=None)
-df_train.to_csv('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/big_3_groups_train_dataset.csv', sep=';',index=None)
+df_test.to_csv('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/only_big_3_groups_test_dataset.csv', sep=';',index=None)
+df_train.to_csv('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/only_big_3_groups_train_dataset.csv', sep=';',index=None)

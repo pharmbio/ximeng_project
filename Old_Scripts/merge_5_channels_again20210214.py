@@ -35,9 +35,9 @@ file_name_list =  os.listdir(image_path_1)
 df = pd.read_csv("/home/jovyan/mnt/external-images-pvc/ximeng/dataset_ximeng.csv",';')
 
 
-add_group = ['AGC']
+add_family = ['PIKK']
 for index, row in df.iterrows():
-    if row['group'] in add_group:
+    if row['family'] == 'PIKK':
         image_1 = cv2.imread(image_path_1 +"/" + str(index) + ".tif",-1)
         image_2 = cv2.imread(image_path_2 +"/" + str(index) + ".tif",-1)
         image_3 = cv2.imread(image_path_3 +"/" + str(index) + ".tif",-1)
@@ -54,11 +54,11 @@ for index, row in df.iterrows():
         print(index)
         np.save(target_path + str(index), five_channel_image)
 
-
-#remove 'other' group
-other_group = ['Atypical']
-for index, row in df.iterrows():
-    if row['group'] in other_group:
-        print(str(index))
-        os.remove('/home/jovyan/scratch-shared/ximeng/five_channel_images/' + str(index) + '.npy')
+# remove 'other' group
+# other_group = ['Atypical']
+# for index, row in df.iterrows():
+#     if row['group'] in other_group:
+#         if os.path.isfile('/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images/' + str(index) + '.npy'):
+#             print(str(index))
+#             os.remove('/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images/' + str(index) + '.npy')
 
