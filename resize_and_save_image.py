@@ -1,12 +1,12 @@
 import os
 import numpy as np
-
+from skimage.transform import resize
 traversal_file="/home/jovyan/mnt/external-images-pvc/ximeng/five_channel_images"
-output_file="/home/jovyan/scratch-shared/ximeng/croped_image"
+output_file="/home/jovyan/scratch-shared/ximeng/resized_image"
 
 def resize_image(img_path,save_path):
     image = np.load(img_path)
-    image_processing = np.resize(image, (270,270,5))
+    image_processing = resize(image, (270,270,5),anti_aliasing=True)
     np.save(save_path, image_processing)
     print("Save as : " + save_path)
 
