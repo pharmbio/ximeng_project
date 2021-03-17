@@ -25,7 +25,6 @@ def main():
     
     working_device = "cuda:1" #if torch.cuda.is_available() else "cpu"
     select_model,loss_function,optimizer = main_nn(working_device)
-    freeze(select_model)
 
     num_epochs = 20
     file_save_name = '0316_groups_Resnet18_freezeall_resize_20epoch'
@@ -78,10 +77,6 @@ def main_nn(working_device):
     loss_function = nn.NLLLoss()
     optimizer = optim.Adam(model.parameters())
 
-    return model,loss_function,optimizer
-
-
-def freeze(model):
     params = model.state_dict()
     params.keys()
     for name, param in model.named_parameters():
@@ -93,6 +88,9 @@ def freeze(model):
     optimizer = optim.SGD(filter(lambda p: p.requires_grad, model.parameters()), lr=0.1)
     #for p in filter(lambda p: p.requires_grad, model.parameters()):
         #print(p)
+
+    return model,loss_function,optimizer
+
 
 
 
