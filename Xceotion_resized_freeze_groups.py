@@ -75,22 +75,6 @@ def main_nn(working_device):
     loss_function = nn.NLLLoss()
     optimizer = optim.Adam(model.parameters())
 
-    params = model.state_dict()
-    params.keys()
-    for name, param in model.named_parameters():
-        print(name)
-        if param.requires_grad and '1.block' in name:
-            param.requires_grad = False
-        # if param.requires_grad and '1.layer2' in name:
-        #     param.requires_grad = False
-        # if param.requires_grad and '1.layer3' in name:
-        #     param.requires_grad = False
-
-    #for name, param in model.named_parameters():
-        #print(name, param)
-    optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=0.01)
-    #for p in filter(lambda p: p.requires_grad, model.parameters()):
-        #print(p)
     return model,loss_function,optimizer
 
 

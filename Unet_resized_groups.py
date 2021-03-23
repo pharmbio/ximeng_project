@@ -9,7 +9,8 @@ from torchvision import datasets, models, transforms
 import torch.nn as nn
 import torch.optim as optim
 from torchvision.transforms import ToTensor
-import pretrainedmodels
+import segmentation_models_pytorch as smp
+from segmentation_models_pytorch.encoders import get_preprocessing_fn
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import ConfusionMatrixDisplay
 
@@ -21,14 +22,14 @@ def main():
     valid_dataset = CustomDataset('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/only_big_3_groups_test_dataset.csv', "/home/jovyan/scratch-shared/ximeng/resized_image"  )
     train_data_size = len(train_dataset)
     valid_data_size = len(valid_dataset)
-    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=256, shuffle=True, num_workers=8)
-    valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=256, shuffle=True, num_workers=8)
+    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True, num_workers=8)
+    valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=64, shuffle=True, num_workers=8)
     
     working_device = "cuda:0" #if torch.cuda.is_available() else "cpu"
     select_model,loss_function,optimizer = main_nn(working_device)
 
-    num_epochs = 20
-    file_save_name = '0316_groups_Xception_resize_20epoch'
+    num_epochs = 40
+    file_save_name = '0318_groups_unet_resize'
     trained_model, history, filenames, class_preds, class_true= train_and_valid(working_device, select_model, loss_function, optimizer, num_epochs, train_dataloader, valid_dataloader, train_data_size,valid_data_size)
     
     save_and_plot(trained_model, history, file_save_name, filenames, class_preds, class_true)
@@ -55,18 +56,42 @@ class CustomDataset(torch.utils.data.Dataset):
        
 
 def main_nn(working_device):
-    model = pretrainedmodels.xception(num_classes=1000, pretrained='imagenet')
+    ENCODER = 'se_resnext50_32x4d'
+    ENCODER_WEIGHTS = 'imagenet'
+    CLASSES = ['car']
+    ACTIVATION = 'sigmoid' # could be None for logits or 'softmax2d' for multicalss segmentation
+    DEVICE = 'cuda'
+
+    # create segmentation model with pretrained encoder
+    model = smp.FPN(
+        encoder_name=ENCODER, 
+        encoder_weights=ENCODER_WEIGHTS, 
+        classes=4, 
+        activation=ACTIVATION,
+    )
+
+    preprocessing_fn = smp.encoders.get_preprocessing_fn(ENCODER, ENCODER_WEIGHTS)
+#     aux_params=dict(
+#     pooling='avg',             # one of 'avg', 'max'
+#     dropout=0.5,               # dropout ratio, default is None
+#     activation='softmax',      # activation function, default is None
+#     classes=4,                 # define number of output labels
+# )
+#     model = smp.Unet('resnet34', encoder_weights="imagenet", in_channels = 5, classes=4, aux_params=aux_params)
+
+#     print(model)
+#     # fc_inputs = model.fc.in_features
+#     # model.fc = nn.Sequential(
+#     #     nn.Linear(fc_inputs, 4),
+#     #     nn.LogSoftmax(dim=1))    
+#     model.segmentation_head[0]=nn.Sequential(
+#          nn.Conv2d(in_channels=5, 
+#                     out_channels=3, 
+#                     kernel_size=1, 
+#                     stride=1, 
+#                     padding=0,
+#                     bias=False))
     
-    model.last_linear.out_features = 4
-    print(model)   
-    model = nn.Sequential(
-         nn.Conv2d(in_channels=5, 
-                    out_channels=3, 
-                    kernel_size=3, 
-                    stride=3, 
-                    padding=0,
-                    bias=False),
-        model)
 
     if torch.cuda.is_available():
         #model = torch.nn.DataParallel(model, device_ids=[0,1,2]) #multi gpu
@@ -75,23 +100,25 @@ def main_nn(working_device):
     loss_function = nn.NLLLoss()
     optimizer = optim.Adam(model.parameters())
 
-    params = model.state_dict()
-    params.keys()
-    for name, param in model.named_parameters():
-        print(name)
-        if param.requires_grad and '1.block' in name:
-            param.requires_grad = False
-        # if param.requires_grad and '1.layer2' in name:
-        #     param.requires_grad = False
-        # if param.requires_grad and '1.layer3' in name:
-        #     param.requires_grad = False
+    # params = model.state_dict()
+    # params.keys()
+    # for name, param in model.named_parameters():
+    #     print(name)
+    #     if param.requires_grad and '1.layer1' in name:
+    #         param.requires_grad = False
+    #     if param.requires_grad and '1.layer2' in name:
+    #         param.requires_grad = False
 
-    #for name, param in model.named_parameters():
-        #print(name, param)
-    optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=0.01)
-    #for p in filter(lambda p: p.requires_grad, model.parameters()):
-        #print(p)
+    # #for name, param in model.named_parameters():
+    #     #print(name, param)
+    # optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=0.1)
+    # #for p in filter(lambda p: p.requires_grad, model.parameters()):
+    #     #print(p)
     return model,loss_function,optimizer
+
+
+
+
 
 
 def train_and_valid(working_device, model, loss_function, optimizer, epochs, train_dataloader, valid_dataloader, train_data_size,valid_data_size):
@@ -117,7 +144,6 @@ def train_and_valid(working_device, model, loss_function, optimizer, epochs, tra
             inputs = torch.tensor(inputs, dtype=torch.float32)
             inputs = inputs.transpose(1, 3).contiguous()
             inputs, labels = inputs.to(device), labels.to(device)
-
             optimizer.zero_grad()
             outputs = model(inputs)
  
@@ -182,7 +208,7 @@ def train_and_valid(working_device, model, loss_function, optimizer, epochs, tra
 
 def save_and_plot(trained_model, history, file_save_name, filenames, class_preds, class_true):
 
-    torch.save(trained_model, '/home/jovyan/repo/ximeng_project/Outputs/'+file_save_name+'_trained_model.pt')
+    #torch.save(trained_model, '/home/jovyan/repo/ximeng_project/Outputs/'+file_save_name+'_trained_model.pt')
         
     torch.save(history, '/home/jovyan/repo/ximeng_project/Outputs/'+file_save_name+'_history.pt') 
     history = np.array(history)

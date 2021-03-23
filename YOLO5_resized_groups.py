@@ -9,7 +9,6 @@ from torchvision import datasets, models, transforms
 import torch.nn as nn
 import torch.optim as optim
 from torchvision.transforms import ToTensor
-import pretrainedmodels
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import ConfusionMatrixDisplay
 
@@ -21,14 +20,14 @@ def main():
     valid_dataset = CustomDataset('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/only_big_3_groups_test_dataset.csv', "/home/jovyan/scratch-shared/ximeng/resized_image"  )
     train_data_size = len(train_dataset)
     valid_data_size = len(valid_dataset)
-    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=256, shuffle=True, num_workers=8)
-    valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=256, shuffle=True, num_workers=8)
+    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True, num_workers=8)
+    valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=64, shuffle=True, num_workers=8)
     
     working_device = "cuda:0" #if torch.cuda.is_available() else "cpu"
     select_model,loss_function,optimizer = main_nn(working_device)
 
-    num_epochs = 20
-    file_save_name = '0316_groups_Xception_resize_20epoch'
+    num_epochs = 40
+    file_save_name = '0317_groups_Resnet18_freeze4fun_resize'
     trained_model, history, filenames, class_preds, class_true= train_and_valid(working_device, select_model, loss_function, optimizer, num_epochs, train_dataloader, valid_dataloader, train_data_size,valid_data_size)
     
     save_and_plot(trained_model, history, file_save_name, filenames, class_preds, class_true)
@@ -55,18 +54,8 @@ class CustomDataset(torch.utils.data.Dataset):
        
 
 def main_nn(working_device):
-    model = pretrainedmodels.xception(num_classes=1000, pretrained='imagenet')
-    
-    model.last_linear.out_features = 4
-    print(model)   
-    model = nn.Sequential(
-         nn.Conv2d(in_channels=5, 
-                    out_channels=3, 
-                    kernel_size=3, 
-                    stride=3, 
-                    padding=0,
-                    bias=False),
-        model)
+    model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
+    print(model)
 
     if torch.cuda.is_available():
         #model = torch.nn.DataParallel(model, device_ids=[0,1,2]) #multi gpu
@@ -79,19 +68,21 @@ def main_nn(working_device):
     params.keys()
     for name, param in model.named_parameters():
         print(name)
-        if param.requires_grad and '1.block' in name:
+        if param.requires_grad and '1.layer1' in name:
             param.requires_grad = False
-        # if param.requires_grad and '1.layer2' in name:
-        #     param.requires_grad = False
-        # if param.requires_grad and '1.layer3' in name:
-        #     param.requires_grad = False
+        if param.requires_grad and '1.layer2' in name:
+            param.requires_grad = False
 
     #for name, param in model.named_parameters():
         #print(name, param)
-    optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=0.01)
+    optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=0.1)
     #for p in filter(lambda p: p.requires_grad, model.parameters()):
         #print(p)
     return model,loss_function,optimizer
+
+
+
+
 
 
 def train_and_valid(working_device, model, loss_function, optimizer, epochs, train_dataloader, valid_dataloader, train_data_size,valid_data_size):
@@ -182,7 +173,7 @@ def train_and_valid(working_device, model, loss_function, optimizer, epochs, tra
 
 def save_and_plot(trained_model, history, file_save_name, filenames, class_preds, class_true):
 
-    torch.save(trained_model, '/home/jovyan/repo/ximeng_project/Outputs/'+file_save_name+'_trained_model.pt')
+    #torch.save(trained_model, '/home/jovyan/repo/ximeng_project/Outputs/'+file_save_name+'_trained_model.pt')
         
     torch.save(history, '/home/jovyan/repo/ximeng_project/Outputs/'+file_save_name+'_history.pt') 
     history = np.array(history)
