@@ -27,10 +27,10 @@ def main():
     valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=256, shuffle=True, num_workers=8)
     
     working_device = "cuda:0" #if torch.cuda.is_available() else "cpu"
-    select_model,loss_function,optimizer = main_nn(working_device)
-
     num_epochs = 20
-    file_save_name = '0324_groups_Resnet50_freeze_augmentation_resize_20epoch'
+    select_model,loss_function,optimizer = main_nn(num_epochs, working_device)
+
+    file_save_name = '0330_groups_Resnet50__augmentation_resize_20epoch'
     trained_model, history, filenames, class_preds, class_true= train_and_valid(working_device, select_model, loss_function, optimizer, num_epochs, train_dataloader, valid_dataloader, train_data_size,valid_data_size)
     
     save_and_plot(trained_model, history, file_save_name, filenames, class_preds, class_true)
@@ -38,7 +38,7 @@ def main():
 
 
 class CustomDataset(torch.utils.data.Dataset):
-    def __init__(self, csv_path, images_folder, transform = None):
+    def __init__(self, csv_path, images_folder, transform = True):
         self.df = pd.read_csv(csv_path,sep = ';')
         self.images_folder = images_folder
         self.transform = imgaug.augmenters.Sequential([
@@ -60,14 +60,35 @@ class CustomDataset(torch.utils.data.Dataset):
         return image, label, filename
        
 
-def main_nn(working_device):
+class CutNet(nn.Module):
+    def __init__(self , model):
+        super(CutNet, self).__init__()
+
+        self.resnet_layer = nn.Sequential(*list(model.children())[:-3])
+        
+        self.pool_layer = nn.AdaptiveAvgPool2d(output_size=(1, 1))  
+        self.fc = nn.Linear(1024, 4)
+        
+    def forward(self, x):
+        x = self.resnet_layer(x)
+
+        x = self.pool_layer(x)
+        x = x.view(x.size(0), -1) 
+        x = self.fc(x)
+        return x
+        
+
+def main_nn(num_epochs, working_device):
  
     model = models.resnet50(pretrained= True)
+    #print(model)
+    #model = CutNet(model)
+    print(model)
+
     fc_inputs = model.fc.in_features
     model.fc = nn.Sequential(
         nn.Linear(fc_inputs, 4),
-        nn.LogSoftmax(dim=1)) 
-    model = torch.nn.Sequential(*(list(model.children())[0:45])) 
+        nn.LogSoftmax(dim=1))
 
     model = nn.Sequential(
          nn.Conv2d(in_channels=5, 
@@ -86,18 +107,15 @@ def main_nn(working_device):
     loss_function = nn.NLLLoss()
     optimizer = optim.Adam(model.parameters())
 
-    params = model.state_dict()
-    params.keys()
+    # params = model.state_dict()
+    # params.keys()
+    # if num_epochs < 21:
+    #     for name, param in model.named_parameters():
+    #         if param.requires_grad and '1.layer' in name:
+    #             param.requires_grad = False
 
-    for name, param in model.named_parameters():
-        if param.requires_grad and '1.layer' in name:
-            param.requires_grad = False
+    #optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=0.001)
 
-    #for name, param in model.named_parameters():
-        #print(name, param)
-    optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=0.01)
-    #for p in filter(lambda p: p.requires_grad, model.parameters()):
-        #print(p)
 
     return model,loss_function,optimizer
 
@@ -196,18 +214,22 @@ def save_and_plot(trained_model, history, file_save_name, filenames, class_preds
         
     torch.save(history, '/home/jovyan/repo/ximeng_project/Outputs/'+file_save_name+'_history.pt') 
     history = np.array(history)
-    plt.plot(history[:, 0:2])
+    #plt.style.use('ggplot')
+    fig = plt.figure(figsize=(8,6))
+    ax1 = fig.add_subplot()
+    plt.plot(history[:, :2])
     plt.legend(['Train Loss', 'Valid Loss'])
+    plt.xlabel('Epoch Number')             
+    ax1.set_ylabel('Loss')                                
+
+    ax2 = ax1.twinx()
+    ax2.set_ylabel('Accuracy') 
+    ax2.set_ylim(0,1) 
+    plt.plot(history[:, 2:3], 'g')  
+    plt.plot(history[:, 3:4], 'y')  
+    plt.legend(['Train Accuracy', 'Valid Accuracy'])    
+
     plt.xlabel('Epoch Number')
-    plt.ylabel('Loss')
-    plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+ file_save_name + '_loss_curve.png')
-    plt.show()
-    
-    plt.plot(history[:, 2:4])
-    plt.legend(['Train Accuracy', 'Valid Accuracy'])
-    plt.xlabel('Epoch Number')
-    plt.ylabel('Accuracy')
-    plt.ylim(0, 1)
     plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+ file_save_name +'_accuracy_curve.png')
     plt.show()
 
