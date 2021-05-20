@@ -1,6 +1,8 @@
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import ConfusionMatrixDisplay
 
 history = torch.load( '/home/jovyan/repo/ximeng_project/Outputs/0330_groups_Resnet50__augmentation_resize_20epoch_history.pt') 
 history = np.array(history)
@@ -42,9 +44,6 @@ plt.xlabel('Epoch Number')
 # ax2.set_ylabel('Accuracy')
 
 # ax2.legend(loc=0)
-
-
-
 
 plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/0330_groups_Resnet50__augmentation_resize_20epoch_history_all.png')
 plt.show()

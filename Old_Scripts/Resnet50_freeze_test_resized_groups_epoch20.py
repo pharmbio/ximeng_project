@@ -23,14 +23,14 @@ def main():
     valid_dataset = CustomDataset('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/only_big_3_groups_test_dataset.csv', "/home/jovyan/scratch-shared/ximeng/resized_image"  )
     train_data_size = len(train_dataset)
     valid_data_size = len(valid_dataset)
-    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=256, shuffle=True, num_workers=8)
-    valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=256, shuffle=True, num_workers=8)
+    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=256, shuffle=True, num_workers=16)
+    valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=256, shuffle=True, num_workers=16)
     
     working_device = "cuda:0" #if torch.cuda.is_available() else "cpu"
     num_epochs = 20
     select_model,loss_function,optimizer = main_nn(num_epochs, working_device)
 
-    file_save_name = '0330_groups_Resnet50__augmentation_resize_20epoch'
+    file_save_name = '0504_groups_Resnet50__augmentation_resize_20epoch'
     trained_model, history, filenames, class_preds, class_true= train_and_valid(working_device, select_model, loss_function, optimizer, num_epochs, train_dataloader, valid_dataloader, train_data_size,valid_data_size)
     
     save_and_plot(trained_model, history, file_save_name, filenames, class_preds, class_true)
@@ -83,7 +83,6 @@ def main_nn(num_epochs, working_device):
     model = models.resnet50(pretrained= True)
     #print(model)
     #model = CutNet(model)
-    print(model)
 
     fc_inputs = model.fc.in_features
     model.fc = nn.Sequential(
