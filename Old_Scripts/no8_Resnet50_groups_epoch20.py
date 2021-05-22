@@ -15,20 +15,6 @@ import imgaug.augmenters
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import ConfusionMatrixDisplay
 
-# os.environ['CUDA_VISIBLE_DEVICES'] = '0' 
-# torch.__version__
-# print(torch.cuda.is_available())
-# torch.backends.cudnn.enabled
-# torch.backends.cudnn.version()
-# torch.backends.cuda.is_built()
-# torch.cuda.is_initialized()
-# torch.cuda.current_device()
-# torch.cuda._initialized = True
-# torch.cuda.init()
-# torch.version.cuda
-# torch.cuda.device_count()
-# torch.cuda.empty_cache()
-
 
 def main():
     torch.cuda.empty_cache()#clean cache before running
@@ -41,10 +27,10 @@ def main():
     valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=256, shuffle=True, num_workers=16)
     
     working_device = "cuda:0" #if torch.cuda.is_available() else "cpu"
-    num_epochs = 40
+    num_epochs = 20
     select_model,loss_function,optimizer = main_nn(num_epochs, working_device)
 
-    file_save_name = '0519_final_Resnet50_2class_40epoch'
+    file_save_name = '0521_no8_Resnet50_groups_20epoch'
     trained_model, history, filenames, class_preds, class_true= train_and_valid(working_device, select_model, loss_function, optimizer, num_epochs, train_dataloader, valid_dataloader, train_data_size,valid_data_size)
     
     save_and_plot(trained_model, history, file_save_name, filenames, class_preds, class_true)
@@ -60,14 +46,14 @@ class CustomDataset(torch.utils.data.Dataset):
          imgaug.augmenters.Fliplr(0.5), # horizontally flip 50% of the images
          imgaug.augmenters.GaussianBlur(sigma=(0, 3.0)) # blur images with a sigma of 0 to 3.0
          ])
-        self.class2index ={"control":0, "compound":1}
+        self.class2index ={"control":0, "TK":1, "CMGC":2, "AGC":3}
 
     def __len__(self):
         return len(self.df)
 
     def __getitem__(self, index):
         filename = self.df.loc[index,'id']
-        label =  self.class2index[self.df.loc[index, 'type']]
+        label =  self.class2index[self.df.loc[index, 'group']]
         image = np.load(os.path.join(self.images_folder, str(filename)) + '.npy')
         if self.transform is not None:
             image = self.transform(images=image)
@@ -81,7 +67,7 @@ class CutNet(nn.Module):
         self.resnet_layer = nn.Sequential(*list(model.children())[:-3])
         
         self.pool_layer = nn.AdaptiveAvgPool2d(output_size=(1, 1))  
-        self.fc = nn.Linear(1024, 2)
+        self.fc = nn.Linear(1024, 4)
         
     def forward(self, x):
         x = self.resnet_layer(x)
@@ -100,7 +86,7 @@ def main_nn(num_epochs, working_device):
 
     fc_inputs = model.fc.in_features
     model.fc = nn.Sequential(
-        nn.Linear(fc_inputs, 2),
+        nn.Linear(fc_inputs, 4),
         nn.LogSoftmax(dim=1))
 
     model = nn.Sequential(
@@ -120,12 +106,12 @@ def main_nn(num_epochs, working_device):
     loss_function = nn.NLLLoss()
     #optimizer = optim.Adam(model.parameters())
 
-    params = model.state_dict()
-    params.keys()
-    if num_epochs < 21:
-        for name, param in model.named_parameters():
-            if param.requires_grad and '1.layer' in name:
-                param.requires_grad = False
+    #params = model.state_dict()
+    #params.keys()
+    #if num_epochs < 11:
+        #for name, param in model.named_parameters():
+            #if param.requires_grad and '1.layer' in name:
+                #param.requires_grad = False
 
     optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=0.001)
 
@@ -226,6 +212,8 @@ def save_and_plot(trained_model, history, file_save_name, filenames, class_preds
     #torch.save(trained_model, '/home/jovyan/repo/ximeng_project/Outputs/'+file_save_name+'_trained_model.pt')
         
     torch.save(history, '/home/jovyan/repo/ximeng_project/Outputs/'+file_save_name+'_history.pt') 
+    torch.save(history, '/home/jovyan/repo/ximeng_project/Outputs/'+file_save_name+'_history.csv')
+    
     history = np.array(history)
     #plt.style.use('ggplot')
     fig = plt.figure(figsize=(8,6))
@@ -248,8 +236,8 @@ def save_and_plot(trained_model, history, file_save_name, filenames, class_preds
 
     y_pred = class_preds
     y_true = class_true
-    cm = confusion_matrix(y_true, y_pred,labels=[0,1], normalize='all')
-    cmplot =  ConfusionMatrixDisplay(cm,display_labels=["control", "compound"])
+    cm = confusion_matrix(y_true, y_pred,labels=[0,1,2,3], normalize='all')
+    cmplot =  ConfusionMatrixDisplay(cm,display_labels=["control", "TK", "CMGC", "AGC"])
     cmplot.plot()
     plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+ file_save_name + '_cmplot.png')
     plt.show()

@@ -30,7 +30,7 @@ def main():
     num_epochs = 40
     select_model,loss_function,optimizer = main_nn(num_epochs, working_device)
 
-    file_save_name = '0519_final_Resnet50_families_40epoch'
+    file_save_name = '0521_test2_Resnet50_groups_40epoch'
     trained_model, history, filenames, class_preds, class_true= train_and_valid(working_device, select_model, loss_function, optimizer, num_epochs, train_dataloader, valid_dataloader, train_data_size,valid_data_size)
     
     save_and_plot(trained_model, history, file_save_name, filenames, class_preds, class_true)
@@ -38,22 +38,18 @@ def main():
 
 
 class CustomDataset(torch.utils.data.Dataset):
-    def __init__(self, csv_path, images_folder, transform = True):
+    def __init__(self, csv_path, images_folder, transform = None):
         self.df = pd.read_csv(csv_path,sep = ';')
         self.images_folder = images_folder
-        self.transform = imgaug.augmenters.Sequential([
-         imgaug.augmenters.Crop(px=(0, 16)), # crop images from each side by 0 to 16px (randomly chosen)
-         imgaug.augmenters.Fliplr(0.5), # horizontally flip 50% of the images
-         imgaug.augmenters.GaussianBlur(sigma=(0, 3.0)) # blur images with a sigma of 0 to 3.0
-         ])
-        self.class2index ={"control":0, "EGFR":1, "PIKK":2, "CDK":3}
+        self.transform = None
+        self.class2index ={"control":0, "TK":1, "CMGC":2, "AGC":3}
 
     def __len__(self):
         return len(self.df)
 
     def __getitem__(self, index):
         filename = self.df.loc[index,'id']
-        label =  self.class2index[self.df.loc[index, 'family']]
+        label =  self.class2index[self.df.loc[index, 'group']]
         image = np.load(os.path.join(self.images_folder, str(filename)) + '.npy')
         if self.transform is not None:
             image = self.transform(images=image)
@@ -64,7 +60,7 @@ class CutNet(nn.Module):
     def __init__(self , model):
         super(CutNet, self).__init__()
 
-        self.resnet_layer = nn.Sequential(*list(model.children())[:-3])
+        self.resnet_layer = nn.Sequential(*list(model.children())[:-4])
         
         self.pool_layer = nn.AdaptiveAvgPool2d(output_size=(1, 1))  
         self.fc = nn.Linear(1024, 4)
@@ -80,7 +76,7 @@ class CutNet(nn.Module):
 
 def main_nn(num_epochs, working_device):
  
-    model = models.resnet50(pretrained= True)
+    model = models.resnet18(pretrained= True)
     #print(model)
     #model = CutNet(model)
 
@@ -108,12 +104,14 @@ def main_nn(num_epochs, working_device):
 
     params = model.state_dict()
     params.keys()
-    if num_epochs < 21:
-        for name, param in model.named_parameters():
-            if param.requires_grad and '1.layer' in name:
-                param.requires_grad = False
+    for name, param in model.named_parameters():
+        if param.requires_grad and '1.layer1' in name:
+            param.requires_grad = False
+    #     if param.requires_grad and '1.layer2' in name:
+    #         param.requires_grad = False
 
-    optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=0.001)
+
+    optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=0.0001)
 
 
     return model,loss_function,optimizer
@@ -235,7 +233,7 @@ def save_and_plot(trained_model, history, file_save_name, filenames, class_preds
     y_pred = class_preds
     y_true = class_true
     cm = confusion_matrix(y_true, y_pred,labels=[0,1,2,3], normalize='all')
-    cmplot =  ConfusionMatrixDisplay(cm,display_labels=["control", "EGFR", "PIKK", "CDK"])
+    cmplot =  ConfusionMatrixDisplay(cm,display_labels=["control", "TK", "CMGC", "AGC"])
     cmplot.plot()
     plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+ file_save_name + '_cmplot.png')
     plt.show()

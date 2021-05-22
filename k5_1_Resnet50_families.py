@@ -1,16 +1,12 @@
 import torch
 import pandas as pd
-import PIL
 import os
 import matplotlib.pyplot as plt
 import time
 import numpy as np
-from torchvision import datasets, models, transforms
+from torchvision import models
 import torch.nn as nn
 import torch.optim as optim
-from torchvision.transforms import ToTensor
-import cv2
-import imgaug
 import imgaug.augmenters
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import ConfusionMatrixDisplay
@@ -19,18 +15,18 @@ from sklearn.metrics import ConfusionMatrixDisplay
 def main():
     torch.cuda.empty_cache()#clean cache before running
     #load data
-    train_dataset = CustomDataset('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/only_big_3_groups_train_dataset.csv', "/home/jovyan/scratch-shared/ximeng/resized_image"  )
-    valid_dataset = CustomDataset('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/only_big_3_groups_test_dataset.csv', "/home/jovyan/scratch-shared/ximeng/resized_image"  )
+    train_dataset = CustomDataset('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/families_fold_train_1.csv', "/home/jovyan/scratch-shared/ximeng/resized_image"  )
+    valid_dataset = CustomDataset('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/families_fold_test_1.csv', "/home/jovyan/scratch-shared/ximeng/resized_image"  )
     train_data_size = len(train_dataset)
     valid_data_size = len(valid_dataset)
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=256, shuffle=True, num_workers=16)
     valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=256, shuffle=True, num_workers=16)
     
     working_device = "cuda:0" #if torch.cuda.is_available() else "cpu"
-    num_epochs = 40
+    num_epochs = 200
     select_model,loss_function,optimizer = main_nn(num_epochs, working_device)
 
-    file_save_name = '0519_final_Resnet50_groups_40epoch'
+    file_save_name = 'k5_1lr_Resnet50_families_200epoch'
     trained_model, history, filenames, class_preds, class_true= train_and_valid(working_device, select_model, loss_function, optimizer, num_epochs, train_dataloader, valid_dataloader, train_data_size,valid_data_size)
     
     save_and_plot(trained_model, history, file_save_name, filenames, class_preds, class_true)
@@ -38,22 +34,18 @@ def main():
 
 
 class CustomDataset(torch.utils.data.Dataset):
-    def __init__(self, csv_path, images_folder, transform = True):
+    def __init__(self, csv_path, images_folder, transform = None):
         self.df = pd.read_csv(csv_path,sep = ';')
         self.images_folder = images_folder
-        self.transform = imgaug.augmenters.Sequential([
-         imgaug.augmenters.Crop(px=(0, 16)), # crop images from each side by 0 to 16px (randomly chosen)
-         imgaug.augmenters.Fliplr(0.5), # horizontally flip 50% of the images
-         imgaug.augmenters.GaussianBlur(sigma=(0, 3.0)) # blur images with a sigma of 0 to 3.0
-         ])
-        self.class2index ={"control":0, "TK":1, "CMGC":2, "AGC":3}
+        self.transform = None
+        self.class2index ={"control":0, "EGFR":1, "PIKK":2, "CDK":3}
 
     def __len__(self):
         return len(self.df)
 
     def __getitem__(self, index):
         filename = self.df.loc[index,'id']
-        label =  self.class2index[self.df.loc[index, 'group']]
+        label =  self.class2index[self.df.loc[index, 'family']]
         image = np.load(os.path.join(self.images_folder, str(filename)) + '.npy')
         if self.transform is not None:
             image = self.transform(images=image)
@@ -108,12 +100,14 @@ def main_nn(num_epochs, working_device):
 
     params = model.state_dict()
     params.keys()
-    if num_epochs < 21:
-        for name, param in model.named_parameters():
-            if param.requires_grad and '1.layer' in name:
-                param.requires_grad = False
+    for name, param in model.named_parameters():
+        if param.requires_grad and '1.layer1' in name:
+            param.requires_grad = False
+        if param.requires_grad and '1.layer2' in name:
+            param.requires_grad = False
 
-    optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=0.001)
+    optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=0.000001)
+
 
 
     return model,loss_function,optimizer
@@ -194,6 +188,7 @@ def train_and_valid(working_device, model, loss_function, optimizer, epochs, tra
             best_acc = avg_valid_acc
             best_epoch = epoch + 1
 
+
         epoch_end = time.time()
  
         print("Epoch: {:03d}, Training: Loss: {:.4f}, Accuracy: {:.4f}%, \n\t\tValidation: Loss: {:.4f}, Accuracy: {:.4f}%, Time: {:.4f}s".format(
@@ -235,7 +230,7 @@ def save_and_plot(trained_model, history, file_save_name, filenames, class_preds
     y_pred = class_preds
     y_true = class_true
     cm = confusion_matrix(y_true, y_pred,labels=[0,1,2,3], normalize='all')
-    cmplot =  ConfusionMatrixDisplay(cm,display_labels=["control", "TK", "CMGC", "AGC"])
+    cmplot =  ConfusionMatrixDisplay(cm,display_labels=["control", "EGFR", "PIKK", "CDK"])
     cmplot.plot()
     plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+ file_save_name + '_cmplot.png')
     plt.show()
