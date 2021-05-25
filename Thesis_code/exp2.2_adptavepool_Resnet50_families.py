@@ -19,14 +19,14 @@ def main():
     valid_dataset = CustomDataset('/home/jovyan/mnt/external-images-pvc/ximeng/csv_files_for_load/families_fold_test_1.csv', "/home/jovyan/scratch-shared/ximeng/resized_image"  )
     train_data_size = len(train_dataset)
     valid_data_size = len(valid_dataset)
-    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=16)
-    valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=32, shuffle=True, num_workers=16)
+    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=8, shuffle=True, num_workers=4)
+    valid_dataloader = torch.utils.data.DataLoader(valid_dataset, batch_size=8, shuffle=True, num_workers=4)
     
     working_device = "cuda:0" #if torch.cuda.is_available() else "cpu"
-    num_epochs = 50
+    num_epochs = 40
     select_model,loss_function,optimizer = main_nn(num_epochs, working_device)
 
-    file_save_name = '0523_3oversamplelowlr_families_50epoch'
+    file_save_name = '0524_exp2.2_lowlr_adptavepool_Resnet50_families_30epoch'
     trained_model, history, filenames, class_preds, class_true= train_and_valid(file_save_name, working_device, select_model, loss_function, optimizer, num_epochs, train_dataloader, valid_dataloader, train_data_size,valid_data_size)
     
     save_and_plot(trained_model, history, file_save_name, filenames, class_preds, class_true)
@@ -73,23 +73,16 @@ class CutNet(nn.Module):
 def main_nn(num_epochs, working_device):
  
     model = models.resnet50(pretrained= True)
-    #print(model)
-    #model = CutNet(model)
-
     fc_inputs = model.fc.in_features
     model.fc = nn.Sequential(
         nn.Linear(fc_inputs, 4),
         nn.LogSoftmax(dim=1))
 
+
     model = nn.Sequential(
-         nn.Conv2d(in_channels=5, 
-                    out_channels=3, 
-                    kernel_size=3, 
-                    stride=3, 
-                    padding=0,
-                    bias=False),
+         nn.AdaptiveAvgPool3d((3, 244, 244)),
         model)
-    
+
 
     if torch.cuda.is_available():
         #model = torch.nn.DataParallel(model, device_ids=[0,1,2]) #multi gpu
@@ -187,6 +180,7 @@ def train_and_valid(file_save_name, working_device, model, loss_function, optimi
         if best_acc < avg_valid_acc:
             best_acc = avg_valid_acc
             best_epoch = epoch + 1
+
         min_loss = 100000
         if avg_valid_loss < min_loss:
             min_loss = avg_valid_loss
@@ -209,7 +203,7 @@ def train_and_valid(file_save_name, working_device, model, loss_function, optimi
 
 def save_and_plot(trained_model, history, file_save_name, filenames, class_preds, class_true):
 
-    torch.save(trained_model, '/home/jovyan/mnt/external-images-pvc/ximeng/saved_model/'+file_save_name+'_trained_model.pt')
+    #torch.save(trained_model, '/home/jovyan/repo/ximeng_project/Outputs/'+file_save_name+'_trained_model.pt')
         
     torch.save(history, '/home/jovyan/repo/ximeng_project/Outputs/'+file_save_name+'_history.pt') 
     history = np.array(history)
@@ -234,7 +228,7 @@ def save_and_plot(trained_model, history, file_save_name, filenames, class_preds
 
     y_pred = class_preds
     y_true = class_true
-    cm = confusion_matrix(y_true, y_pred,labels=[0,1,2,3], normalize='all')
+    cm = confusion_matrix(y_true, y_pred,labels=[0,1,2,3], normalize='true')
     cmplot =  ConfusionMatrixDisplay(cm,display_labels=["control", "EGFR", "PIKK", "CDK"])
     cmplot.plot()
     plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/'+ file_save_name + '_cmplot.png')

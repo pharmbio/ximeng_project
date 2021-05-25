@@ -26,8 +26,8 @@ def main():
     num_epochs = 50
     select_model,loss_function,optimizer = main_nn(num_epochs, working_device)
 
-    file_save_name = '0523_3oversamplelowlr_families_50epoch'
-    trained_model, history, filenames, class_preds, class_true= train_and_valid(file_save_name, working_device, select_model, loss_function, optimizer, num_epochs, train_dataloader, valid_dataloader, train_data_size,valid_data_size)
+    file_save_name = '0523_exp1.2_Resnet50_families_50epoch'
+    trained_model, history, filenames, class_preds, class_true= train_and_valid(working_device, select_model, loss_function, optimizer, num_epochs, train_dataloader, valid_dataloader, train_data_size,valid_data_size)
     
     save_and_plot(trained_model, history, file_save_name, filenames, class_preds, class_true)
     
@@ -115,7 +115,7 @@ def main_nn(num_epochs, working_device):
 
 
 
-def train_and_valid(file_save_name, working_device, model, loss_function, optimizer, epochs, train_dataloader, valid_dataloader, train_data_size,valid_data_size):
+def train_and_valid(working_device, model, loss_function, optimizer, epochs, train_dataloader, valid_dataloader, train_data_size,valid_data_size):
 
     device = torch.device(working_device)
     history = []
@@ -187,11 +187,6 @@ def train_and_valid(file_save_name, working_device, model, loss_function, optimi
         if best_acc < avg_valid_acc:
             best_acc = avg_valid_acc
             best_epoch = epoch + 1
-        min_loss = 100000
-        if avg_valid_loss < min_loss:
-            min_loss = avg_valid_loss
-            print("save model")
-            torch.save(model.state_dict(),'/home/jovyan/mnt/external-images-pvc/ximeng/saved_model/'+file_save_name+'_trained_model.pth')
 
 
         epoch_end = time.time()
@@ -209,7 +204,7 @@ def train_and_valid(file_save_name, working_device, model, loss_function, optimi
 
 def save_and_plot(trained_model, history, file_save_name, filenames, class_preds, class_true):
 
-    torch.save(trained_model, '/home/jovyan/mnt/external-images-pvc/ximeng/saved_model/'+file_save_name+'_trained_model.pt')
+    #torch.save(trained_model, '/home/jovyan/repo/ximeng_project/Outputs/'+file_save_name+'_trained_model.pt')
         
     torch.save(history, '/home/jovyan/repo/ximeng_project/Outputs/'+file_save_name+'_history.pt') 
     history = np.array(history)
