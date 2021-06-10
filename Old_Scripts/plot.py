@@ -4,12 +4,12 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import ConfusionMatrixDisplay
 
-history = torch.load( '/home/jovyan/repo/ximeng_project/Outputs/0523_exp1.2_Resnet50_families_50epoch_history.pt') 
+history = torch.load( 'repo/ximeng_project/Outputs/0523_exp3.1_adptavepool_Resnet50_cut_2class_gamma98_30epoch_history.pt') 
 history = np.array(history)
 print(history)
 
 #plt.legend(['Train Loss', 'Valid Loss','Train Accuracy', 'Valid Accuracy'])
-plt.style.use('ggplot')
+#plt.style.use('ggplot')
 fig = plt.figure(figsize=(8,6))
 ax1 = fig.add_subplot()
 plt.plot(history[:, :2])
@@ -45,5 +45,5 @@ plt.xlabel('Epoch Number')
 
 # ax2.legend(loc=0)
 
-#plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/0330_groups_Resnet50__augmentation_resize_20epoch_history_all.png')
-#plt.show()
+plt.savefig('/home/jovyan/repo/ximeng_project/Outputs/0523_e3.1_all.png')
+plt.show()
